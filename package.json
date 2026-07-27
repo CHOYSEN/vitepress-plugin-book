@@ -1,0 +1,55 @@
+{
+  "name": "vitepress-plugin-reader",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "VitePress plugin to enhance reading experience for open-source books — progress tracking, scroll memory, reading stats, and more.",
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "vitepress",
+    "vitepress-plugin",
+    "reader",
+    "reading-progress",
+    "ebook",
+    "documentation"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js"
+    },
+    "./client/style.css": "./dist/client/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "./dist/client/style.css"
+  ],
+  "scripts": {
+    "build": "vite build && node scripts/build-post.mjs",
+    "dev": "vite build --watch",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "vitepress": ">=1.0.0",
+    "vue": ">=3.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^6.0.0",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.40",
+    "vue-tsc": "^3.3.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}
