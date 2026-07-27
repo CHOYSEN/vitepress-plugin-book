@@ -1,5 +1,5 @@
 <template>
-  <div v-if="options.readingTime.enabled" class="vr-reading-time">
+  <div v-if="options.readingTime.enabled" class="vb-reading-time">
     ⏱ {{ readingTime.displayText.value }}
   </div>
 </template>
@@ -8,6 +8,6 @@
 import { inject } from 'vue'
 import type { ResolvedReaderOptions } from '../types'
 
-const readingTime = inject<any>('vr-reading-time')!
-const options = inject<ResolvedReaderOptions>('vr-options')!
+const readingTime = inject<any>('vb-reading-time')!
+const options = inject<ResolvedReaderOptions>('vb-options')!
 </script>

@@ -26,7 +26,7 @@ function addCopyButton(pre: HTMLElement): void {
   pre.style.position = 'relative'
 
   const button = document.createElement('button')
-  button.className = 'vr-code-copy-btn'
+  button.className = 'vb-code-copy-btn'
   button.setAttribute('aria-label', '复制代码')
   button.title = '复制代码'
   button.innerHTML = `
@@ -34,7 +34,7 @@ function addCopyButton(pre: HTMLElement): void {
       <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
     </svg>
-    <span class="vr-code-copy-btn__text">复制</span>
+    <span class="vb-code-copy-btn__text">复制</span>
   `
 
   button.addEventListener('click', async () => {
@@ -42,11 +42,11 @@ function addCopyButton(pre: HTMLElement): void {
     const text = code?.textContent ?? ''
     try {
       await navigator.clipboard.writeText(text)
-      button.classList.add('vr-code-copy-btn--copied')
-      button.querySelector('.vr-code-copy-btn__text')!.textContent = '已复制!'
+      button.classList.add('vb-code-copy-btn--copied')
+      button.querySelector('.vb-code-copy-btn__text')!.textContent = '已复制!'
       setTimeout(() => {
-        button.classList.remove('vr-code-copy-btn--copied')
-        button.querySelector('.vr-code-copy-btn__text')!.textContent = '复制'
+        button.classList.remove('vb-code-copy-btn--copied')
+        button.querySelector('.vb-code-copy-btn__text')!.textContent = '复制'
       }, 2000)
     } catch {
       // Fallback for older browsers
@@ -58,11 +58,11 @@ function addCopyButton(pre: HTMLElement): void {
       textarea.select()
       document.execCommand('copy')
       document.body.removeChild(textarea)
-      button.classList.add('vr-code-copy-btn--copied')
-      button.querySelector('.vr-code-copy-btn__text')!.textContent = '已复制!'
+      button.classList.add('vb-code-copy-btn--copied')
+      button.querySelector('.vb-code-copy-btn__text')!.textContent = '已复制!'
       setTimeout(() => {
-        button.classList.remove('vr-code-copy-btn--copied')
-        button.querySelector('.vr-code-copy-btn__text')!.textContent = '复制'
+        button.classList.remove('vb-code-copy-btn--copied')
+        button.querySelector('.vb-code-copy-btn__text')!.textContent = '复制'
       }, 2000)
     }
   })
@@ -94,7 +94,7 @@ function processCodeBlocks(container: HTMLElement | Document): void {
  * Remove all copy buttons from the DOM.
  */
 function removeAllButtons(): void {
-  document.querySelectorAll('.vr-code-copy-btn').forEach(btn => btn.remove())
+  document.querySelectorAll('.vb-code-copy-btn').forEach(btn => btn.remove())
 }
 
 // On mount, observe the document for code blocks

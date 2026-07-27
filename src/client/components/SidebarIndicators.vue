@@ -1,12 +1,12 @@
 <template>
-  <div v-if="options.sidebarMarkers.enabled" class="vr-sidebar-indicators">
-    <div class="vr-sidebar-indicators__header">
-      <span class="vr-sidebar-indicators__label">阅读进度</span>
-      <span class="vr-sidebar-indicators__count">{{ readCount }} / {{ totalCount }}</span>
+  <div v-if="options.sidebarMarkers.enabled" class="vb-sidebar-indicators">
+    <div class="vb-sidebar-indicators__header">
+      <span class="vb-sidebar-indicators__label">阅读进度</span>
+      <span class="vb-sidebar-indicators__count">{{ readCount }} / {{ totalCount }}</span>
     </div>
-    <div class="vr-sidebar-indicators__bar">
+    <div class="vb-sidebar-indicators__bar">
       <div
-        class="vr-sidebar-indicators__bar-fill"
+        class="vb-sidebar-indicators__bar-fill"
         :style="{ width: `${progressPercent}%` }"
       />
     </div>
@@ -17,9 +17,9 @@
 import { inject, computed, onMounted, onUnmounted, watch } from 'vue'
 import type { ResolvedReaderOptions } from '../types'
 
-const readingProgress = inject<any>('vr-reading-progress')!
-const sidebarData = inject<any>('vr-sidebar-data')!
-const options = inject<ResolvedReaderOptions>('vr-options')!
+const readingProgress = inject<any>('vb-reading-progress')!
+const sidebarData = inject<any>('vb-sidebar-data')!
+const options = inject<ResolvedReaderOptions>('vb-options')!
 
 const readCount = computed(() =>
   readingProgress.readPages.value.filter((p: string) =>
@@ -51,7 +51,7 @@ function addSidebarDots(): void {
 
   links.forEach((link) => {
     // Avoid adding duplicate dots
-    if (link.querySelector('.vr-sidebar-dot')) return
+    if (link.querySelector('.vb-sidebar-dot')) return
 
     const href = link.getAttribute('href')
     if (!href) return
@@ -59,7 +59,7 @@ function addSidebarDots(): void {
     const isRead = readPages.includes(href)
 
     const dot = document.createElement('span')
-    dot.className = `vr-sidebar-dot ${isRead ? 'vr-sidebar-dot--read' : 'vr-sidebar-dot--unread'}`
+    dot.className = `vb-sidebar-dot ${isRead ? 'vb-sidebar-dot--read' : 'vb-sidebar-dot--unread'}`
     dot.setAttribute('aria-hidden', 'true')
     dot.textContent = isRead ? '✓' : '○'
     link.insertBefore(dot, link.firstChild)

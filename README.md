@@ -1,4 +1,4 @@
-# vitepress-plugin-reader
+# vitepress-plugin-book
 
 📖 VitePress 阅读增强插件 —— 为 VitePress 部署的开源书籍提供电子书级别的阅读体验。
 
@@ -18,7 +18,7 @@
 ## 安装
 
 ```bash
-npm install vitepress-plugin-reader
+npm install vitepress-plugin-book
 ```
 
 ## 使用
@@ -28,8 +28,8 @@ npm install vitepress-plugin-reader
 **`.vitepress/theme/index.ts`**：
 
 ```ts
-import { withReader } from 'vitepress-plugin-reader/client'
-import 'vitepress-plugin-reader/client/style.css'
+import { withReader } from 'vitepress-plugin-book/client'
+import 'vitepress-plugin-book/client/style.css'
 
 export default withReader()
 ```
@@ -39,8 +39,8 @@ export default withReader()
 ### 自定义配置
 
 ```ts
-import { withReader } from 'vitepress-plugin-reader/client'
-import 'vitepress-plugin-reader/client/style.css'
+import { withReader } from 'vitepress-plugin-book/client'
+import 'vitepress-plugin-book/client/style.css'
 
 export default withReader({
   autoRedirect: {
@@ -61,12 +61,12 @@ export default withReader({
 interface ReaderOptions {
   readingProgress?: {
     enabled?: boolean           // 默认: true
-    storageKey?: string         // 默认: 'vitepress-reader:progress'
+    storageKey?: string         // 默认: 'vitepress-book:progress'
   }
   scrollMemory?: {
     enabled?: boolean           // 默认: true
     throttleMs?: number         // 默认: 500
-    storageKey?: string         // 默认: 'vitepress-reader:scroll'
+    storageKey?: string         // 默认: 'vitepress-book:scroll'
   }
   sidebarMarkers?: {
     enabled?: boolean           // 默认: true
@@ -85,7 +85,7 @@ interface ReaderOptions {
   }
   readingStats?: {
     enabled?: boolean           // 默认: true
-    storageKey?: string         // 默认: 'vitepress-reader:stats'
+    storageKey?: string         // 默认: 'vitepress-book:stats'
   }
   autoRedirect?: {
     enabled?: boolean           // 默认: true
@@ -109,8 +109,8 @@ import {
   ProgressBar,
   BackToTop,
   CodeCopyButton,
-} from 'vitepress-plugin-reader/client'
-import 'vitepress-plugin-reader/client/style.css'
+} from 'vitepress-plugin-book/client'
+import 'vitepress-plugin-book/client/style.css'
 
 export default {
   extends: DefaultTheme,

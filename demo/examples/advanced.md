@@ -11,7 +11,7 @@
 这些信息可以在浏览器的 DevTools 中查看：
 
 1. 打开 DevTools → Application → Local Storage
-2. 找到 `vitepress-reader:stats` 键
+2. 找到 `vitepress-book:stats` 键
 3. 查看 `readPages`、`totalReadingTimeMs`、`readingDays` 等字段
 
 ## 多 Sidebar 配置兼容

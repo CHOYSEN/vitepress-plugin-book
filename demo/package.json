@@ -10,6 +10,6 @@
   "devDependencies": {
     "vitepress": "^1.0.0",
     "vue": "^3.4.0",
-    "vitepress-plugin-reader": "workspace:*"
+    "vitepress-plugin-book": "workspace:*"
   }
 }

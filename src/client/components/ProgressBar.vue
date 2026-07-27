@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="options.readingProgress.enabled"
-    class="vr-progress-bar"
+    class="vb-progress-bar"
     :style="{ width: `${readingProgress.progress.value}%` }"
     role="progressbar"
     :aria-valuenow="readingProgress.progress.value"
@@ -14,6 +14,6 @@
 import { inject } from 'vue'
 import type { ResolvedReaderOptions } from '../types'
 
-const readingProgress = inject<any>('vr-reading-progress')!
-const options = inject<ResolvedReaderOptions>('vr-options')!
+const readingProgress = inject<any>('vb-reading-progress')!
+const options = inject<ResolvedReaderOptions>('vb-options')!
 </script>

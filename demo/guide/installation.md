@@ -3,7 +3,7 @@
 ## 安装
 
 ```bash
-pnpm add vitepress-plugin-reader
+pnpm add vitepress-plugin-book
 ```
 
 ## 最简配置
@@ -11,8 +11,8 @@ pnpm add vitepress-plugin-reader
 在 `.vitepress/theme/index.ts` 中：
 
 ```ts
-import { withReader } from 'vitepress-plugin-reader/client'
-import 'vitepress-plugin-reader/client/style.css'
+import { withReader } from 'vitepress-plugin-book/client'
+import 'vitepress-plugin-book/client/style.css'
 
 export default withReader()
 ```
@@ -80,8 +80,8 @@ import {
   ProgressBar,
   BackToTop,
   CodeCopyButton,
-} from 'vitepress-plugin-reader/client'
-import 'vitepress-plugin-reader/client/style.css'
+} from 'vitepress-plugin-book/client'
+import 'vitepress-plugin-book/client/style.css'
 
 export default {
   extends: DefaultTheme,

@@ -30,8 +30,8 @@ const readingProgress = useReadingProgress(options)
 const sidebarData = useSidebarData()
 
 // Provide shared state to UI components
-provide('vr-reading-time', readingTime)
-provide('vr-reading-progress', readingProgress)
-provide('vr-sidebar-data', sidebarData)
-provide('vr-options', options)
+provide('vb-reading-time', readingTime)
+provide('vb-reading-progress', readingProgress)
+provide('vb-sidebar-data', sidebarData)
+provide('vb-options', options)
 </script>

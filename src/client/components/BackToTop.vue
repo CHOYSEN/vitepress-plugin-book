@@ -1,9 +1,9 @@
 <template>
-  <Transition name="vr-fade">
+  <Transition name="vb-fade">
     <button
       v-if="enabled"
       v-show="showButton"
-      class="vr-back-to-top"
+      class="vb-back-to-top"
       :aria-label="'回到顶部'"
       :title="'回到顶部'"
       @click="scrollToTop"

@@ -1,18 +1,18 @@
 /**
- * Complete configuration options for vitepress-plugin-reader.
+ * Complete configuration options for vitepress-plugin-book.
  * All properties are optional — defaults work out of the box.
  */
 export interface ReaderOptions {
   /** Reading progress tracking and auto-redirect */
   readingProgress?: {
     enabled?: boolean // default: true
-    storageKey?: string // default: 'vitepress-reader:progress'
+    storageKey?: string // default: 'vitepress-book:progress'
   }
   /** Scroll position memory per page */
   scrollMemory?: {
     enabled?: boolean // default: true
     throttleMs?: number // default: 500
-    storageKey?: string // default: 'vitepress-reader:scroll'
+    storageKey?: string // default: 'vitepress-book:scroll'
   }
   /** Sidebar read/unread markers */
   sidebarMarkers?: {
@@ -39,7 +39,7 @@ export interface ReaderOptions {
   /** Reading statistics tracking */
   readingStats?: {
     enabled?: boolean // default: true
-    storageKey?: string // default: 'vitepress-reader:stats'
+    storageKey?: string // default: 'vitepress-book:stats'
   }
   /** Auto-redirect on revisit */
   autoRedirect?: {

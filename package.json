@@ -1,5 +1,5 @@
 {
-  "name": "vitepress-plugin-reader",
+  "name": "vitepress-plugin-book",
   "version": "0.1.0",
   "type": "module",
   "description": "VitePress plugin to enhance reading experience for open-source books — progress tracking, scroll memory, reading stats, and more.",

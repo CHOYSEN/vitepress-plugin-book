@@ -1,18 +1,18 @@
 <template>
   <Teleport to="body">
-    <Transition name="vr-toast">
-      <div v-if="visible" class="vr-continue-reading" role="alert">
-        <div class="vr-continue-reading__content">
-          <span class="vr-continue-reading__icon">📖</span>
-          <span class="vr-continue-reading__text">
+    <Transition name="vb-toast">
+      <div v-if="visible" class="vb-continue-reading" role="alert">
+        <div class="vb-continue-reading__content">
+          <span class="vb-continue-reading__icon">📖</span>
+          <span class="vb-continue-reading__text">
             继续阅读上次的章节？
           </span>
         </div>
-        <div class="vr-continue-reading__actions">
-          <button class="vr-btn vr-btn--primary" @click="onGo">
+        <div class="vb-continue-reading__actions">
+          <button class="vb-btn vb-btn--primary" @click="onGo">
             继续
           </button>
-          <button class="vr-btn vr-btn--ghost" @click="onDismiss" aria-label="关闭">
+          <button class="vb-btn vb-btn--ghost" @click="onDismiss" aria-label="关闭">
             ✕
           </button>
         </div>
@@ -25,8 +25,8 @@
 import { inject, onMounted, onUnmounted, ref } from 'vue'
 import type { ResolvedReaderOptions } from '../types'
 
-const readingProgress = inject<any>('vr-reading-progress')!
-const options = inject<ResolvedReaderOptions>('vr-options')!
+const readingProgress = inject<any>('vb-reading-progress')!
+const options = inject<ResolvedReaderOptions>('vb-options')!
 
 const visible = ref(false)
 

@@ -1,5 +1,5 @@
 /**
- * vitepress-plugin-reader — main entry point.
+ * vitepress-plugin-book — main entry point.
  *
  * Currently, all functionality is client-side. No separate Vite plugin is needed.
  * This file provides a placeholder for future server/build-side features
@@ -15,7 +15,7 @@ export type { ReaderOptions, ResolvedReaderOptions } from './client/types'
  */
 export function readerBuildPlugin() {
   return {
-    name: 'vitepress-plugin-reader',
+    name: 'vitepress-plugin-book',
     // Future build hooks here
   }
 }

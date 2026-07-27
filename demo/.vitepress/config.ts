@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'VitePress Plugin Reader Demo',
-  description: 'Demo site for vitepress-plugin-reader',
+  description: 'Demo site for vitepress-plugin-book',
   lang: 'zh-CN',
   themeConfig: {
     sidebar: [

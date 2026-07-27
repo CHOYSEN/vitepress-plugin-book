@@ -3,21 +3,21 @@ import type { ResolvedReaderOptions } from './types'
 
 /** Injection key for providing resolved options to child components */
 export const READER_OPTIONS_KEY: InjectionKey<ResolvedReaderOptions> =
-  Symbol('vitepress-reader:options')
+  Symbol('vitepress-book:options')
 
 /** Default localStorage prefix for all keys */
-export const STORAGE_PREFIX = 'vitepress-reader:'
+export const STORAGE_PREFIX = 'vitepress-book:'
 
 /** Default options */
 export const DEFAULT_OPTIONS: ResolvedReaderOptions = {
   readingProgress: {
     enabled: true,
-    storageKey: 'vitepress-reader:progress',
+    storageKey: 'vitepress-book:progress',
   },
   scrollMemory: {
     enabled: true,
     throttleMs: 500,
-    storageKey: 'vitepress-reader:scroll',
+    storageKey: 'vitepress-book:scroll',
   },
   sidebarMarkers: {
     enabled: true,
@@ -41,7 +41,7 @@ export const DEFAULT_OPTIONS: ResolvedReaderOptions = {
   },
   readingStats: {
     enabled: true,
-    storageKey: 'vitepress-reader:stats',
+    storageKey: 'vitepress-book:stats',
   },
   autoRedirect: {
     enabled: true,

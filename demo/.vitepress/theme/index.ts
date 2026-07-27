@@ -1,5 +1,5 @@
-import { withReader } from 'vitepress-plugin-reader/client'
-import 'vitepress-plugin-reader/client/style.css'
+import { withReader } from 'vitepress-plugin-book/client'
+import 'vitepress-plugin-book/client/style.css'
 
 export default withReader({
   readingTime: { wordsPerMinute: 300 },

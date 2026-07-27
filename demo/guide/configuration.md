@@ -68,7 +68,7 @@ withReader({
 
 ## localStorage 存储
 
-所有数据存储在浏览器 `localStorage` 中，命名空间为 `vitepress-reader:`。
+所有数据存储在浏览器 `localStorage` 中，命名空间为 `vitepress-book:`。
 你可以自定义存储键名以避免与其他插件冲突：
 
 ```ts
