@@ -5,10 +5,9 @@
 <script setup lang="ts">
 import { inject, computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vitepress'
-import { READER_OPTIONS_KEY } from '../constants'
 import type { ResolvedReaderOptions } from '../types'
 
-const options = inject<ResolvedReaderOptions>(READER_OPTIONS_KEY)!
+const options = inject<ResolvedReaderOptions>('vb-options')!
 const { route } = useRouter()
 const enabled = computed(() => options.codeCopy.enabled)
 

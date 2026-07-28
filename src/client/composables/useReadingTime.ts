@@ -12,12 +12,23 @@ export function useReadingTime(options: ResolvedReaderOptions) {
 
   const { wordsPerMinute, languages } = options.readingTime
 
-  /** Detect if text is primarily CJK */
+  /** Detect if text is primarily CJK using code-point ranges */
   function isCJK(text: string): boolean {
-    const cjkRegex =
-      /[一-鿿㐀-䶿豈-﫿＀-￯　-〿぀-ゟ゠-ヿ가-힯]/
-    const cjkChars = text.match(cjkRegex)
-    return cjkChars ? cjkChars.length > text.length * 0.3 : false
+    const ranges: [number, number][] = [
+      [0x4e00, 0x9fff], // CJK Unified Ideographs
+      [0x3400, 0x4dbf], // CJK Extension A
+      [0x3040, 0x309f], // Hiragana
+      [0x30a0, 0x30ff], // Katakana
+      [0xac00, 0xd7af], // Hangul
+    ]
+    let cjkCount = 0
+    for (const ch of text) {
+      const cp = ch.codePointAt(0)!
+      if (ranges.some(([lo, hi]) => cp >= lo && cp <= hi)) {
+        cjkCount++
+      }
+    }
+    return cjkCount > text.length * 0.3
   }
 
   /** Count words: whitespace-split for English, char-based for CJK */

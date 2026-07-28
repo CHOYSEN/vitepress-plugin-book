@@ -17,10 +17,9 @@
 
 <script setup lang="ts">
 import { inject, computed, ref, onMounted, onUnmounted } from 'vue'
-import { READER_OPTIONS_KEY } from '../constants'
 import type { ResolvedReaderOptions } from '../types'
 
-const options = inject<ResolvedReaderOptions>(READER_OPTIONS_KEY)!
+const options = inject<ResolvedReaderOptions>('vb-options')!
 const showButton = ref(false)
 
 const enabled = computed(() => options.backToTop.enabled)
