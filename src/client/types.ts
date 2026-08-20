@@ -5,48 +5,48 @@
 export interface ReaderOptions {
   /** Reading progress tracking and auto-redirect */
   readingProgress?: {
-    enabled?: boolean // default: true
-    storageKey?: string // default: 'vitepress-book:progress'
-  }
+    enabled?: boolean; // default: true
+    storageKey?: string; // default: 'vitepress-book:progress'
+  };
   /** Scroll position memory per page */
   scrollMemory?: {
-    enabled?: boolean // default: true
-    throttleMs?: number // default: 500
-    storageKey?: string // default: 'vitepress-book:scroll'
-  }
+    enabled?: boolean; // default: true
+    throttleMs?: number; // default: 500
+    storageKey?: string; // default: 'vitepress-book:scroll'
+  };
   /** Sidebar read/unread markers */
   sidebarMarkers?: {
-    enabled?: boolean // default: true
-  }
+    enabled?: boolean; // default: true
+  };
   /** Reading time estimation */
   readingTime?: {
-    enabled?: boolean // default: true
+    enabled?: boolean; // default: true
     /** Words per minute for English text */
-    wordsPerMinute?: number // default: 200
+    wordsPerMinute?: number; // default: 200
     /** Language-specific WPM overrides. key = ISO 639-1 lang code */
-    languages?: Record<string, number>
-  }
+    languages?: Record<string, number>;
+  };
   /** Back-to-top floating button */
   backToTop?: {
-    enabled?: boolean // default: true
+    enabled?: boolean; // default: true
     /** Pixels scrolled before showing the button */
-    threshold?: number // default: 300
-  }
+    threshold?: number; // default: 300
+  };
   /** Code block copy button */
   codeCopy?: {
-    enabled?: boolean // default: true
-  }
+    enabled?: boolean; // default: true
+  };
   /** Reading statistics tracking */
   readingStats?: {
-    enabled?: boolean // default: true
-    storageKey?: string // default: 'vitepress-book:stats'
-  }
+    enabled?: boolean; // default: true
+    storageKey?: string; // default: 'vitepress-book:stats'
+  };
   /** Auto-redirect on revisit */
   autoRedirect?: {
-    enabled?: boolean // default: true
+    enabled?: boolean; // default: true
     /** Duration in ms before auto-dismissing the toast. 0 = redirect immediately, no toast */
-    toastDuration?: number // default: 5000
-  }
+    toastDuration?: number; // default: 5000
+  };
 }
 
 /**
@@ -54,56 +54,63 @@ export interface ReaderOptions {
  */
 export interface ResolvedReaderOptions {
   readingProgress: {
-    enabled: boolean
-    storageKey: string
-  }
+    enabled: boolean;
+    storageKey: string;
+  };
   scrollMemory: {
-    enabled: boolean
-    throttleMs: number
-    storageKey: string
-  }
+    enabled: boolean;
+    throttleMs: number;
+    storageKey: string;
+  };
   sidebarMarkers: {
-    enabled: boolean
-  }
+    enabled: boolean;
+  };
   readingTime: {
-    enabled: boolean
-    wordsPerMinute: number
-    languages: Record<string, number>
-  }
+    enabled: boolean;
+    wordsPerMinute: number;
+    languages: Record<string, number>;
+  };
   backToTop: {
-    enabled: boolean
-    threshold: number
-  }
+    enabled: boolean;
+    threshold: number;
+  };
   codeCopy: {
-    enabled: boolean
-  }
+    enabled: boolean;
+  };
   readingStats: {
-    enabled: boolean
-    storageKey: string
-  }
+    enabled: boolean;
+    storageKey: string;
+  };
   autoRedirect: {
-    enabled: boolean
-    toastDuration: number
-  }
+    enabled: boolean;
+    toastDuration: number;
+  };
 }
 
 /** Sidebar item with a link (leaf item) */
 export interface SidebarLinkItem {
-  text: string
-  link: string
-  items?: never
+  text: string;
+  link: string;
+  items?: never;
+}
+
+/** Sidebar item with read state for UI markers */
+export interface SidebarMarkerItem {
+  text: string;
+  link: string;
+  isRead: boolean;
 }
 
 /** Sidebar item that contains sub-items (group) */
 export interface SidebarGroupItem {
-  text: string
-  link?: string
-  items: (SidebarLinkItem | SidebarGroupItem)[]
-  collapsed?: boolean
+  text: string;
+  link?: string;
+  items: (SidebarLinkItem | SidebarGroupItem)[];
+  collapsed?: boolean;
 }
 
 /** Any sidebar item */
-export type SidebarItem = SidebarLinkItem | SidebarGroupItem
+export type SidebarItem = SidebarLinkItem | SidebarGroupItem;
 
 /** Multi-sidebar config: keyed by path prefix */
-export type SidebarMulti = Record<string, SidebarItem[]>
+export type SidebarMulti = Record<string, SidebarItem[]>;

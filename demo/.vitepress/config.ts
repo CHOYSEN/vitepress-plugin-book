@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
 
 export default defineConfig({
   title: 'VitePress Plugin Reader Demo',
@@ -22,8 +22,6 @@ export default defineConfig({
         ],
       },
     ],
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com' },
-    ],
+    socialLinks: [{ icon: 'github', link: 'https://github.com' }],
   },
-})
+});

@@ -1,79 +1,90 @@
-import { onMounted, onUnmounted, nextTick } from 'vue'
-import { useRouter } from 'vitepress'
-import { store } from '../store'
-import type { ResolvedReaderOptions } from '../types'
+import { onMounted, onUnmounted, watch, nextTick } from 'vue';
 
-/**
- * Save and restore scroll position for each page.
- */
+import { useRouter } from 'vitepress';
+
+import { store } from '../store';
+
+import type { ResolvedReaderOptions } from '../types';
+
 export function useScrollMemory(options: ResolvedReaderOptions) {
-  const { route } = useRouter()
-  const { storageKey, throttleMs } = options.scrollMemory
+  const { route } = useRouter();
 
-  let throttleTimer: ReturnType<typeof setTimeout> | null = null
+  const { storageKey, throttleMs } = options.scrollMemory;
 
-  // ---- Save current scroll position ----
-  function saveCurrentPosition(path?: string): void {
-    const p = path ?? route.path
-    if (typeof window !== 'undefined' && p) {
-      store.setScroll(storageKey, p, window.scrollY)
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  /**
+   * 保存滚动位置
+   */
+  function saveScroll(path = route.path) {
+    if (typeof window === 'undefined') return;
+
+    store.setScroll(storageKey, path, window.scrollY);
+  }
+
+  /**
+   * 恢复滚动
+   */
+  async function restoreScroll(path: string) {
+    if (typeof window === 'undefined') return;
+
+    // 有hash交给浏览器处理
+    if (window.location.hash) {
+      return;
     }
+
+    const y = store.getScroll(storageKey, path);
+
+    if (!y) return;
+
+    await nextTick();
+    window.scrollTo({ top: y, behavior: 'auto' });
   }
 
-  // ---- Restore scroll position ----
-  function restorePosition(path: string): void {
-    const savedY = store.getScroll(storageKey, path)
-    if (savedY !== null && savedY > 0) {
-      nextTick(() => {
-        // Small delay to let the DOM settle after page render
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            window.scrollTo({ top: savedY, behavior: 'auto' })
-          }, 150)
-        })
-      })
-    }
+  function handleScroll() {
+    if (timer) return;
+
+    timer = setTimeout(() => {
+      timer = null;
+      saveScroll();
+    }, throttleMs);
   }
 
-  // ---- Clear scroll position for a page ----
-  function clearPosition(path: string): void {
-    store.setScroll(storageKey, path, 0)
+  function beforeUnload() {
+    saveScroll();
   }
 
-  // ---- Throttled scroll handler ----
-  function onScroll(): void {
-    if (throttleTimer) return
-    throttleTimer = setTimeout(() => {
-      throttleTimer = null
-      saveCurrentPosition()
-    }, throttleMs)
-  }
-
-  // ---- Setup ----
   onMounted(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') return;
 
-    // Only restore if no hash in URL (user clicked a heading link)
-    const currentPath = route.path
-    if (currentPath && !window.location.hash) {
-      restorePosition(currentPath)
-    }
+    restoreScroll(route.path);
 
-    // Listen for scroll events
-    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('beforeunload', beforeUnload);
+  });
 
-    // Also save on beforeunload
-    window.addEventListener('beforeunload', () => saveCurrentPosition())
-  })
+  watch(
+    () => route.path,
+    async (newPath, oldPath) => {
+      if (oldPath) {
+        saveScroll(oldPath);
+      }
+      await restoreScroll(newPath);
+    },
+  );
 
   onUnmounted(() => {
-    if (typeof window === 'undefined') return
-    window.removeEventListener('scroll', onScroll)
-  })
+    window.removeEventListener('scroll', handleScroll);
+
+    window.removeEventListener('beforeunload', beforeUnload);
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+  });
 
   return {
-    saveCurrentPosition,
-    restorePosition,
-    clearPosition,
-  }
+    saveScroll,
+    restoreScroll,
+  };
 }

@@ -9,29 +9,29 @@
 </template>
 
 <script setup lang="ts">
-import { provide, inject } from 'vue'
-import { READER_OPTIONS_KEY } from '../constants'
-import { useReadingProgress } from '../composables/useReadingProgress'
-import { useScrollMemory } from '../composables/useScrollMemory'
-import { useReadingTime } from '../composables/useReadingTime'
-import { useReadingStats } from '../composables/useReadingStats'
-import { useSidebarData } from '../composables/useSidebarData'
-import type { ResolvedReaderOptions } from '../types'
+import { provide, inject } from 'vue';
+import { READER_OPTIONS_KEY } from '../constants';
+import { useReadingProgress } from '../composables/useReadingProgress';
+import { useScrollMemory } from '../composables/useScrollMemory';
+import { useReadingTime } from '../composables/useReadingTime';
+import { useReadingStats } from '../composables/useReadingStats';
+import { useSidebarData } from '../composables/useSidebarData';
+import type { ResolvedReaderOptions } from '../types';
 
-const options = inject<ResolvedReaderOptions>(READER_OPTIONS_KEY)!
+const options = inject<ResolvedReaderOptions>(READER_OPTIONS_KEY)!;
 
 // Initialize all side-effect composables (scroll memory, stats timer)
-useScrollMemory(options)
-useReadingStats(options)
+useScrollMemory(options);
+useReadingStats(options);
 
 // Compute shared state once
-const readingTime = useReadingTime(options)
-const readingProgress = useReadingProgress(options)
-const sidebarData = useSidebarData()
+const readingTime = useReadingTime(options);
+const readingProgress = useReadingProgress(options);
+const sidebarData = useSidebarData(readingProgress.readPages);
 
 // Provide shared state to UI components
-provide('vb-reading-time', readingTime)
-provide('vb-reading-progress', readingProgress)
-provide('vb-sidebar-data', sidebarData)
-provide('vb-options', options)
+provide('vb-reading-time', readingTime);
+provide('vb-reading-progress', readingProgress);
+provide('vb-sidebar-data', sidebarData);
+provide('vb-options', options);
 </script>

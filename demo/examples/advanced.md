@@ -19,6 +19,7 @@
 VitePress 支持两种侧边栏配置方式：
 
 **数组格式（单侧边栏）：**
+
 ```ts
 sidebar: [
   { text: 'Guide', items: [...] },
@@ -27,6 +28,7 @@ sidebar: [
 ```
 
 **对象格式（多侧边栏）：**
+
 ```ts
 sidebar: {
   '/guide/': [{ text: 'Guide', items: [...] }],

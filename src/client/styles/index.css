@@ -174,12 +174,15 @@
   font-size: 12px;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 /* Show button on hover over the code block */
 .vb-code-copy-btn:hover,
-div[class*="language-"] pre:hover .vb-code-copy-btn,
+div[class*='language-'] pre:hover .vb-code-copy-btn,
 pre:hover .vb-code-copy-btn {
   opacity: 1;
 }
@@ -247,11 +250,12 @@ pre:hover .vb-code-copy-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 6px;
-  font-size: 10px;
   flex-shrink: 0;
   width: 16px;
   height: 16px;
+  margin-right: 6px;
+  font-size: 10px;
+  line-height: 1;
 }
 
 .vb-sidebar-dot--read {
