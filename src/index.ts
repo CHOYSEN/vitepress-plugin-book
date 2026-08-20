@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-export type { ReaderOptions, ResolvedReaderOptions } from './client/types'
+export type { ReaderOptions, ResolvedReaderOptions } from './client/types';
 
 /**
  * Placeholder for future build-time plugin functionality.
@@ -17,5 +17,5 @@ export function readerBuildPlugin() {
   return {
     name: 'vitepress-plugin-book',
     // Future build hooks here
-  }
+  };
 }

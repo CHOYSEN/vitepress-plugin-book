@@ -1,30 +1,35 @@
 // Post-build: copy CSS + generate DTS type declarations.
-import { writeFileSync, copyFileSync, mkdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { writeFileSync, copyFileSync, mkdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const root = join(__dirname, '..')
-const dist = join(root, 'dist')
-const distClient = join(dist, 'client')
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = join(__dirname, '..');
+const dist = join(root, 'dist');
+const distClient = join(dist, 'client');
 
-mkdirSync(distClient, { recursive: true })
+mkdirSync(distClient, { recursive: true });
 
 // ---- Copy standalone CSS ----
-copyFileSync(join(root, 'src/client/styles/index.css'), join(distClient, 'style.css'))
-console.log('✓ dist/client/style.css')
+copyFileSync(join(root, 'src/client/styles/index.css'), join(distClient, 'style.css'));
+console.log('✓ dist/client/style.css');
 
 // ---- dist/index.d.ts (server entry) ----
-writeFileSync(join(dist, 'index.d.ts'), `\
+writeFileSync(
+  join(dist, 'index.d.ts'),
+  `\
 export type { ReaderOptions, ResolvedReaderOptions } from './client/index.js'
 
 export declare function readerBuildPlugin(): {
   name: string
 }
-`)
+`,
+);
 
 // ---- dist/client/index.d.ts ----
-writeFileSync(join(dist, 'client', 'index.d.ts'), `\
+writeFileSync(
+  join(dist, 'client', 'index.d.ts'),
+  `\
 import type { App, Plugin, DefineComponent } from 'vue'
 import type { Theme } from 'vitepress'
 
@@ -98,7 +103,8 @@ export declare const ReadingTime: DefineComponent<{}, {}, any>
 export declare const BackToTop: DefineComponent<{}, {}, any>
 export declare const CodeCopyButton: DefineComponent<{}, {}, any>
 export declare const SidebarIndicators: DefineComponent<{}, {}, any>
-`)
+`,
+);
 
-console.log('✓ dist/client/index.d.ts')
-console.log('✓ dist/index.d.ts')
+console.log('✓ dist/client/index.d.ts');
+console.log('✓ dist/index.d.ts');

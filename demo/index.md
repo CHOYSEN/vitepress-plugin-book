@@ -1,8 +1,8 @@
 ---
 layout: home
 hero:
-  name: "VitePress Plugin Reader"
-  text: "Demo & 功能展示"
+  name: 'VitePress Plugin Reader'
+  text: 'Demo & 功能展示'
   tagline: 为 VitePress 部署的开源书籍提供电子书级别的阅读体验
   actions:
     - theme: brand

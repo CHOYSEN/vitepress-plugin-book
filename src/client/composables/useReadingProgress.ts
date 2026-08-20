@@ -1,111 +1,190 @@
-import { ref, computed, onMounted, watch } from 'vue'
-import { useData, useRouter } from 'vitepress'
-import { store } from '../store'
-import type { ResolvedReaderOptions } from '../types'
-import { useSidebarData } from './useSidebarData'
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
+import { useRouter } from 'vitepress';
+import { store } from '../store';
+import type { ResolvedReaderOptions } from '../types';
+import { useSidebarData } from './useSidebarData';
 
 /**
  * Track which pages have been read and provide progress percentage.
  * Also handles the "continue where you left off" experience.
  */
 export function useReadingProgress(options: ResolvedReaderOptions) {
-  const { route } = useRouter()
-  const { page } = useData()
-  const { allPagesSet } = useSidebarData()
+  const { route } = useRouter();
+  const router = useRouter();
+  const { allPagesSet } = useSidebarData();
 
-  const {
-    storageKey,
-  } = options.readingProgress
+  const { storageKey } = options.readingProgress;
 
-  // ---- Reactive state ----
-  const readPages = ref<string[]>([])
-  const lastVisitedPage = ref<string>('')
-  const lastVisitedAt = ref<number>(0)
-  const showContinuePrompt = ref(false)
+  const data = store.getProgress(storageKey);
 
-  // ---- Load initial state ----
-  function loadState(): void {
-    const data = store.getProgress(storageKey)
-    readPages.value = data.readPages
-    lastVisitedPage.value = data.lastVisitedPage
-    lastVisitedAt.value = data.lastVisitedAt
-  }
+  const readPages = ref<string[]>(data.readPages);
+  const lastVisitedPage = ref<string>(data.lastVisitedPage);
+  const lastVisitedAt = ref<number>(data.lastVisitedAt);
+  const currentReadingPage = ref('');
+  let timer: ReturnType<typeof setTimeout> | null = null;
 
-  // ---- Save state ----
   function saveState(): void {
     store.setProgress(storageKey, {
       readPages: readPages.value,
       lastVisitedPage: lastVisitedPage.value,
       lastVisitedAt: lastVisitedAt.value,
-    })
+    });
   }
 
-  // ---- Mark current page as read ----
+  /**
+   * 更新最近访问页面
+   * 只表示访问过，不代表已读完成
+   */
+  function updateLastVisited(path: string): void {
+    lastVisitedPage.value = path;
+    lastVisitedAt.value = Date.now();
+
+    saveState();
+  }
+
   function markAsRead(path: string): void {
     if (!readPages.value.includes(path)) {
-      readPages.value = [...readPages.value, path]
+      readPages.value = [...readPages.value, path];
     }
-    lastVisitedPage.value = path
-    lastVisitedAt.value = Date.now()
-    saveState()
+
+    saveState();
   }
 
-  // ---- Check if a specific page has been read ----
+  /**
+   * 获取当前滚动比例
+   */
+  function getScrollPercent(): number {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    if (scrollHeight <= 0) {
+      return 1;
+    }
+    return scrollTop / scrollHeight;
+  }
+
+  /**
+   * 检查是否阅读完成
+   */
+  function checkReadComplete(): void {
+    const path = currentReadingPage.value;
+
+    if (!path) {
+      return;
+    }
+
+    if (isPageRead(path)) {
+      return;
+    }
+
+    const percent = getScrollPercent();
+
+    if (percent >= 0.8) {
+      markAsRead(path);
+
+      cleanupReaderListener();
+    }
+  }
+
+  /**
+   * 开始阅读监听
+   */
+  function startReadingTrack(path: string): void {
+    currentReadingPage.value = path;
+
+    // 停留10秒认为阅读完成
+    timer = setTimeout(() => {
+      markAsRead(path);
+
+      cleanupReaderListener();
+    }, 10000);
+
+    window.addEventListener('scroll', checkReadComplete, {
+      passive: true,
+    });
+  }
+
+  /**
+   * 清理监听
+   */
+  function cleanupReaderListener(): void {
+    if (timer) {
+      clearTimeout(timer);
+
+      timer = null;
+    }
+
+    window.removeEventListener('scroll', checkReadComplete);
+  }
+
+  /**
+   * 判断是否已读
+   */
   function isPageRead(path: string): boolean {
-    return readPages.value.includes(path)
+    return readPages.value.includes(path);
   }
 
-  // ---- Progress percentage ----
+  /**
+   * 阅读进度
+   */
   const progress = computed(() => {
-    if (allPagesSet.value.size === 0) return 0
-    const readCount = readPages.value.filter((p) => allPagesSet.value.has(p)).length
-    return Math.round((readCount / allPagesSet.value.size) * 100)
-  })
+    if (allPagesSet.value.size === 0) {
+      return 0;
+    }
 
-  // ---- Dismiss continue prompt ----
-  function dismissContinuePrompt(): void {
-    showContinuePrompt.value = false
-  }
+    const readCount = readPages.value.filter((p) => allPagesSet.value.has(p)).length;
+    return Math.round((readCount / allPagesSet.value.size) * 100);
+  });
 
-  // ---- Navigate to last visited page ----
+  /**
+   * 跳转到上次阅读页面
+   */
   function goToLastVisited(): void {
-    const target = lastVisitedPage.value
-    dismissContinuePrompt()
+    const target = lastVisitedPage.value;
     if (target && target !== route.path) {
-      // Use location.href for a full navigation to the target
-      window.location.href = target
+      router.go(target);
     }
   }
 
-  // ---- Init on mount (SSR-safe) ----
+  /**
+   * 初始化
+   */
   onMounted(() => {
-    loadState()
+    const currentPath = route.path;
 
-    // Check if we should show the "continue reading" prompt
-    const currentPath = route.path
+    // 继续阅读跳转
     if (
       options.autoRedirect.enabled &&
       lastVisitedPage.value &&
       lastVisitedPage.value !== currentPath
     ) {
       if (options.autoRedirect.toastDuration === 0) {
-        // Redirect immediately
-        window.location.href = lastVisitedPage.value
-        return
+        router.go(lastVisitedPage.value);
+        return;
       }
-      showContinuePrompt.value = true
     }
-  })
+    startReadingTrack(currentPath);
+  });
 
-  // Watch for page changes during SPA navigation
+  /**
+   * SPA路由变化
+   */
   watch(
     () => route.path,
     (newPath, oldPath) => {
       if (oldPath && newPath !== oldPath) {
-        markAsRead(newPath)
+        // 用户真正进入新的页面
+        updateLastVisited(newPath);
+        cleanupReaderListener();
+        startReadingTrack(newPath);
       }
     },
-  )
+  );
+
+  onUnmounted(() => {
+    cleanupReaderListener();
+  });
 
   return {
     readPages,
@@ -114,8 +193,6 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
     markAsRead,
     lastVisitedPage,
     lastVisitedAt,
-    showContinuePrompt,
-    dismissContinuePrompt,
     goToLastVisited,
-  }
+  };
 }

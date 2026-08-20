@@ -28,10 +28,10 @@ npm install vitepress-plugin-book
 **`.vitepress/theme/index.ts`**：
 
 ```ts
-import { withReader } from 'vitepress-plugin-book/client'
-import 'vitepress-plugin-book/client/style.css'
+import { withReader } from 'vitepress-plugin-book/client';
+import 'vitepress-plugin-book/client/style.css';
 
-export default withReader()
+export default withReader();
 ```
 
 三行代码即可激活所有功能（使用默认配置）。
@@ -39,20 +39,20 @@ export default withReader()
 ### 自定义配置
 
 ```ts
-import { withReader } from 'vitepress-plugin-book/client'
-import 'vitepress-plugin-book/client/style.css'
+import { withReader } from 'vitepress-plugin-book/client';
+import 'vitepress-plugin-book/client/style.css';
 
 export default withReader({
   autoRedirect: {
-    toastDuration: 3000,     // Toast 3秒后自动消失
+    toastDuration: 3000, // Toast 3秒后自动消失
   },
   readingTime: {
-    wordsPerMinute: 300,     // 中文阅读速度可调高
+    wordsPerMinute: 300, // 中文阅读速度可调高
   },
   backToTop: {
-    threshold: 500,          // 滚动500px后才显示按钮
+    threshold: 500, // 滚动500px后才显示按钮
   },
-})
+});
 ```
 
 ## 配置项
@@ -60,37 +60,37 @@ export default withReader({
 ```ts
 interface ReaderOptions {
   readingProgress?: {
-    enabled?: boolean           // 默认: true
-    storageKey?: string         // 默认: 'vitepress-book:progress'
-  }
+    enabled?: boolean; // 默认: true
+    storageKey?: string; // 默认: 'vitepress-book:progress'
+  };
   scrollMemory?: {
-    enabled?: boolean           // 默认: true
-    throttleMs?: number         // 默认: 500
-    storageKey?: string         // 默认: 'vitepress-book:scroll'
-  }
+    enabled?: boolean; // 默认: true
+    throttleMs?: number; // 默认: 500
+    storageKey?: string; // 默认: 'vitepress-book:scroll'
+  };
   sidebarMarkers?: {
-    enabled?: boolean           // 默认: true
-  }
+    enabled?: boolean; // 默认: true
+  };
   readingTime?: {
-    enabled?: boolean           // 默认: true
-    wordsPerMinute?: number     // 默认: 200
-    languages?: Record<string, number>  // 语言级 WPM 覆盖
-  }
+    enabled?: boolean; // 默认: true
+    wordsPerMinute?: number; // 默认: 200
+    languages?: Record<string, number>; // 语言级 WPM 覆盖
+  };
   backToTop?: {
-    enabled?: boolean           // 默认: true
-    threshold?: number          // 默认: 300 (px)
-  }
+    enabled?: boolean; // 默认: true
+    threshold?: number; // 默认: 300 (px)
+  };
   codeCopy?: {
-    enabled?: boolean           // 默认: true
-  }
+    enabled?: boolean; // 默认: true
+  };
   readingStats?: {
-    enabled?: boolean           // 默认: true
-    storageKey?: string         // 默认: 'vitepress-book:stats'
-  }
+    enabled?: boolean; // 默认: true
+    storageKey?: string; // 默认: 'vitepress-book:stats'
+  };
   autoRedirect?: {
-    enabled?: boolean           // 默认: true
-    toastDuration?: number      // 默认: 5000 (ms), 设 0 则直接跳转不显示 toast
-  }
+    enabled?: boolean; // 默认: true
+    toastDuration?: number; // 默认: 5000 (ms), 设 0 则直接跳转不显示 toast
+  };
 }
 ```
 
@@ -102,15 +102,15 @@ interface ReaderOptions {
 
 ```ts
 // .vitepress/theme/index.ts
-import DefaultTheme from 'vitepress/theme'
-import { h } from 'vue'
+import DefaultTheme from 'vitepress/theme';
+import { h } from 'vue';
 import {
   VitepressReaderPlugin,
   ProgressBar,
   BackToTop,
   CodeCopyButton,
-} from 'vitepress-plugin-book/client'
-import 'vitepress-plugin-book/client/style.css'
+} from 'vitepress-plugin-book/client';
+import 'vitepress-plugin-book/client/style.css';
 
 export default {
   extends: DefaultTheme,
@@ -118,23 +118,23 @@ export default {
     return h(DefaultTheme.Layout, null, {
       'layout-top': () => h(ProgressBar),
       'doc-after': () => h(BackToTop),
-    })
+    });
   },
   enhanceApp({ app }) {
     app.use(VitepressReaderPlugin, {
       readingTime: { wordsPerMinute: 300 },
-    })
+    });
   },
-}
+};
 ```
 
 ### 关闭特定功能
 
 ```ts
 export default withReader({
-  codeCopy: { enabled: false },     // 关闭代码复制（主题已有）
+  codeCopy: { enabled: false }, // 关闭代码复制（主题已有）
   sidebarMarkers: { enabled: false }, // 关闭侧边栏标记
-})
+});
 ```
 
 ## 兼容性

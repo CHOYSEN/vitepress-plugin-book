@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 /** Mock vitepress `useData` — configurable per test */
 export const mockData = {
@@ -12,17 +12,13 @@ export const mockData = {
           { text: 'Install', link: '/guide/install' },
           {
             text: 'Advanced',
-            items: [
-              { text: 'Config', link: '/guide/config' },
-            ],
+            items: [{ text: 'Config', link: '/guide/config' }],
           },
         ],
       },
       {
         text: 'API',
-        items: [
-          { text: 'Overview', link: '/api/overview' },
-        ],
+        items: [{ text: 'Overview', link: '/api/overview' }],
       },
     ],
   }),
@@ -42,19 +38,29 @@ export const mockData = {
   dir: ref('ltr'),
   localeIndex: ref('root'),
   hash: ref(''),
-}
+};
 
 /** Mock vitepress `useRouter` */
 export const mockRouter = {
   route: { path: '/guide/intro', data: {}, component: null },
   go: async (_to?: string) => {},
-  onBeforeRouteChange: undefined as ((to: string) => void | boolean | Promise<void | boolean>) | undefined,
-  onBeforePageLoad: undefined as ((to: string) => void | boolean | Promise<void | boolean>) | undefined,
+  onBeforeRouteChange: undefined as
+    ((to: string) => void | boolean | Promise<void | boolean>) | undefined,
+  onBeforePageLoad: undefined as
+    ((to: string) => void | boolean | Promise<void | boolean>) | undefined,
   onAfterPageLoad: undefined as ((to: string) => void | Promise<void>) | undefined,
   onAfterRouteChange: undefined as ((to: string) => void | Promise<void>) | undefined,
-}
+};
 
-export function useData() { return mockData }
-export function useRouter() { return mockRouter }
-export function useRoute() { return { path: '/guide/intro', data: {}, component: null } }
-export function withBase(path: string) { return path }
+export function useData() {
+  return mockData;
+}
+export function useRouter() {
+  return mockRouter;
+}
+export function useRoute() {
+  return { path: '/guide/intro', data: {}, component: null };
+}
+export function withBase(path: string) {
+  return path;
+}

@@ -1,5 +1,5 @@
-import { defineConfig } from 'tsdown'
-import Vue from 'unplugin-vue/rolldown'
+import { defineConfig } from 'tsdown';
+import Vue from 'unplugin-vue/rolldown';
 
 export default defineConfig({
   entry: ['./src/index.ts', './src/client/index.ts'],
@@ -10,4 +10,4 @@ export default defineConfig({
   dts: false,
   clean: true,
   outDir: 'dist',
-})
+});

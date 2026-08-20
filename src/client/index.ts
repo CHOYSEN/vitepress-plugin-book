@@ -1,25 +1,23 @@
-import type { App, Plugin } from 'vue'
-import { h } from 'vue'
-import type { Theme } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
-import { READER_OPTIONS_KEY, DEFAULT_OPTIONS } from './constants'
-import type { ReaderOptions, ResolvedReaderOptions } from './types'
+import type { App, Plugin } from 'vue';
+import { h } from 'vue';
+import type { Theme } from 'vitepress';
+import DefaultTheme from 'vitepress/theme';
+import { READER_OPTIONS_KEY, DEFAULT_OPTIONS } from './constants';
+import type { ReaderOptions, ResolvedReaderOptions } from './types';
 
 // Components
-import ReaderLayout from './components/ReaderLayout.vue'
-import ProgressBar from './components/ProgressBar.vue'
-import ContinueReading from './components/ContinueReading.vue'
-import ReadingTime from './components/ReadingTime.vue'
-import BackToTop from './components/BackToTop.vue'
-import CodeCopyButton from './components/CodeCopyButton.vue'
-import SidebarIndicators from './components/SidebarIndicators.vue'
+import ReaderLayout from './components/ReaderLayout.vue';
+import ProgressBar from './components/ProgressBar.vue';
+import ContinueReading from './components/ContinueReading.vue';
+import ReadingTime from './components/ReadingTime.vue';
+import BackToTop from './components/BackToTop.vue';
+import CodeCopyButton from './components/CodeCopyButton.vue';
+import SidebarIndicators from './components/SidebarIndicators.vue';
 
 /**
  * Resolve user-provided options with defaults.
  */
-function resolveOptions(
-  userOptions: ReaderOptions = {},
-): ResolvedReaderOptions {
+function resolveOptions(userOptions: ReaderOptions = {}): ResolvedReaderOptions {
   return {
     readingProgress: {
       ...DEFAULT_OPTIONS.readingProgress,
@@ -57,7 +55,7 @@ function resolveOptions(
       ...DEFAULT_OPTIONS.autoRedirect,
       ...userOptions.autoRedirect,
     },
-  }
+  };
 }
 
 /**
@@ -84,42 +82,38 @@ function resolveOptions(
  * ```
  */
 export function withReader(userOptions: ReaderOptions = {}): Theme {
-  const resolved = resolveOptions(userOptions)
+  const resolved = resolveOptions(userOptions);
 
   return {
     extends: DefaultTheme,
     Layout() {
-      return h(
-        ReaderLayout,
-        null,
-        {
-          // ReaderLayout's default slot renders DefaultTheme.Layout with
-          // all reader UI components injected into appropriate slots
-          default: () =>
-            h(DefaultTheme.Layout, null, {
-              // Progress bar at the very top of the layout
-              'layout-top': () => h(ProgressBar),
-              // Reading time badge before doc content
-              'doc-before': () => h(ReadingTime),
-              // Continue-reading toast above doc content
-              'doc-top': () => h(ContinueReading),
-              // Back-to-top button after doc content
-              'doc-after': () => h(BackToTop),
-              // Sidebar indicators in sidebar nav area
-              'sidebar-nav-before': () => h(SidebarIndicators),
-            }),
-        },
-      )
+      return h(ReaderLayout, null, {
+        // ReaderLayout's default slot renders DefaultTheme.Layout with
+        // all reader UI components injected into appropriate slots
+        default: () =>
+          h(DefaultTheme.Layout, null, {
+            // Progress bar at the very top of the layout
+            'layout-top': () => h(ProgressBar),
+            // Reading time badge before doc content
+            'doc-before': () => h(ReadingTime),
+            // Continue-reading toast above doc content
+            'doc-top': () => h(ContinueReading),
+            // Back-to-top button after doc content
+            'doc-after': () => h(BackToTop),
+            // Sidebar indicators in sidebar nav area
+            'sidebar-nav-before': () => h(SidebarIndicators),
+          }),
+      });
     },
     enhanceApp({ app }: { app: App }): void {
       // Provide resolved options to all child components
-      app.provide(READER_OPTIONS_KEY, resolved)
+      app.provide(READER_OPTIONS_KEY, resolved);
 
       // Register CodeCopyButton globally — it's self-contained
       // (MutationObserver-based, doesn't need a specific slot)
-      app.component('CodeCopyButton', CodeCopyButton)
+      app.component('CodeCopyButton', CodeCopyButton);
     },
-  }
+  };
 }
 
 /**
@@ -135,31 +129,31 @@ export function withReader(userOptions: ReaderOptions = {}): Theme {
  */
 export const VitepressReaderPlugin: Plugin<ReaderOptions | undefined> = {
   install(app: App, options: ReaderOptions = {}) {
-    const resolved = resolveOptions(options)
-    app.provide(READER_OPTIONS_KEY, resolved)
+    const resolved = resolveOptions(options);
+    app.provide(READER_OPTIONS_KEY, resolved);
 
     // Register all components globally
-    app.component('ReaderLayout', ReaderLayout)
-    app.component('ProgressBar', ProgressBar)
-    app.component('ContinueReading', ContinueReading)
-    app.component('ReadingTime', ReadingTime)
-    app.component('BackToTop', BackToTop)
-    app.component('CodeCopyButton', CodeCopyButton)
-    app.component('SidebarIndicators', SidebarIndicators)
+    app.component('ReaderLayout', ReaderLayout);
+    app.component('ProgressBar', ProgressBar);
+    app.component('ContinueReading', ContinueReading);
+    app.component('ReadingTime', ReadingTime);
+    app.component('BackToTop', BackToTop);
+    app.component('CodeCopyButton', CodeCopyButton);
+    app.component('SidebarIndicators', SidebarIndicators);
   },
-}
+};
 
 // Re-export components for direct use
-export { ReaderLayout }
-export { ProgressBar }
-export { ContinueReading }
-export { ReadingTime }
-export { BackToTop }
-export { CodeCopyButton }
-export { SidebarIndicators }
+export { ReaderLayout };
+export { ProgressBar };
+export { ContinueReading };
+export { ReadingTime };
+export { BackToTop };
+export { CodeCopyButton };
+export { SidebarIndicators };
 
 // Re-export types
-export type { ReaderOptions, ResolvedReaderOptions } from './types'
+export type { ReaderOptions, ResolvedReaderOptions } from './types';
 
 // Re-export constants
-export { READER_OPTIONS_KEY, DEFAULT_OPTIONS } from './constants'
+export { READER_OPTIONS_KEY, DEFAULT_OPTIONS } from './constants';

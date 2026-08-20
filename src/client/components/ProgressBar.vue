@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
-import type { ResolvedReaderOptions } from '../types'
+import { inject } from 'vue';
+import type { ResolvedReaderOptions } from '../types';
 
-const readingProgress = inject<any>('vb-reading-progress')!
-const options = inject<ResolvedReaderOptions>('vb-options')!
+const readingProgress = inject<any>('vb-reading-progress')!;
+const options = inject<ResolvedReaderOptions>('vb-options')!;
 </script>

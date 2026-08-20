@@ -1,12 +1,12 @@
-import type { InjectionKey } from 'vue'
-import type { ResolvedReaderOptions } from './types'
+import type { InjectionKey } from 'vue';
+import type { ResolvedReaderOptions } from './types';
 
 /** Injection key for providing resolved options to child components */
 export const READER_OPTIONS_KEY: InjectionKey<ResolvedReaderOptions> =
-  Symbol('vitepress-book:options')
+  Symbol('vitepress-book:options');
 
 /** Default localStorage prefix for all keys */
-export const STORAGE_PREFIX = 'vitepress-book:'
+export const STORAGE_PREFIX = 'vitepress-book:';
 
 /** Default options */
 export const DEFAULT_OPTIONS: ResolvedReaderOptions = {
@@ -47,31 +47,31 @@ export const DEFAULT_OPTIONS: ResolvedReaderOptions = {
     enabled: true,
     toastDuration: 5000,
   },
-}
+};
 
 /** Data models */
 
 export interface ReadingProgressData {
   /** Set of page paths that have been visited */
-  readPages: string[]
+  readPages: string[];
   /** Last visited page path */
-  lastVisitedPage: string
+  lastVisitedPage: string;
   /** Timestamp of last visit */
-  lastVisitedAt: number
+  lastVisitedAt: number;
 }
 
 export interface ScrollPositionsData {
   /** Map of page path -> scroll Y offset */
-  [pagePath: string]: number
+  [pagePath: string]: number;
 }
 
 export interface ReadingStatsData {
   /** Set of unique page paths read */
-  totalUniquePages: string[]
+  totalUniquePages: string[];
   /** Cumulative reading time in milliseconds */
-  totalReadingTimeMs: number
+  totalReadingTimeMs: number;
   /** Sorted array of ISO date strings (YYYY-MM-DD) when reading occurred */
-  readingDays: string[]
+  readingDays: string[];
   /** Last reading date (YYYY-MM-DD) */
-  lastReadingDate: string
+  lastReadingDate: string;
 }

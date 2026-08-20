@@ -11,10 +11,10 @@ pnpm add vitepress-plugin-book
 在 `.vitepress/theme/index.ts` 中：
 
 ```ts
-import { withReader } from 'vitepress-plugin-book/client'
-import 'vitepress-plugin-book/client/style.css'
+import { withReader } from 'vitepress-plugin-book/client';
+import 'vitepress-plugin-book/client/style.css';
 
-export default withReader()
+export default withReader();
 ```
 
 三行代码即可激活所有 8 个功能。
@@ -45,17 +45,17 @@ print(fibonacci(10))
 ```javascript
 // 深拷贝一个对象
 function deepClone(obj) {
-  if (obj === null || typeof obj !== 'object') return obj
-  if (obj instanceof Date) return new Date(obj.getTime())
-  if (obj instanceof Array) return obj.map(item => deepClone(item))
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (obj instanceof Date) return new Date(obj.getTime());
+  if (obj instanceof Array) return obj.map((item) => deepClone(item));
 
-  const cloned = {}
+  const cloned = {};
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      cloned[key] = deepClone(obj[key])
+      cloned[key] = deepClone(obj[key]);
     }
   }
-  return cloned
+  return cloned;
 }
 ```
 
@@ -73,15 +73,15 @@ done
 如果不想用 `withReader()` 的默认布局，可以手动将组件注入到 VitePress 的 Layout Slot 中：
 
 ```ts
-import DefaultTheme from 'vitepress/theme'
-import { h } from 'vue'
+import DefaultTheme from 'vitepress/theme';
+import { h } from 'vue';
 import {
   VitepressReaderPlugin,
   ProgressBar,
   BackToTop,
   CodeCopyButton,
-} from 'vitepress-plugin-book/client'
-import 'vitepress-plugin-book/client/style.css'
+} from 'vitepress-plugin-book/client';
+import 'vitepress-plugin-book/client/style.css';
 
 export default {
   extends: DefaultTheme,
@@ -89,14 +89,14 @@ export default {
     return h(DefaultTheme.Layout, null, {
       'layout-top': () => h(ProgressBar),
       'doc-after': () => h(BackToTop),
-    })
+    });
   },
   enhanceApp({ app }) {
     app.use(VitepressReaderPlugin, {
       readingTime: { wordsPerMinute: 300 },
-    })
+    });
   },
-}
+};
 ```
 
 这种用法适合需要精细控制每个组件注入位置的场景。

@@ -5,89 +5,105 @@
       <span class="vb-sidebar-indicators__count">{{ readCount }} / {{ totalCount }}</span>
     </div>
     <div class="vb-sidebar-indicators__bar">
-      <div
-        class="vb-sidebar-indicators__bar-fill"
-        :style="{ width: `${progressPercent}%` }"
-      />
+      <div class="vb-sidebar-indicators__bar-fill" :style="{ width: `${progressPercent}%` }" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, computed, onMounted, onUnmounted, watch } from 'vue'
-import type { ResolvedReaderOptions } from '../types'
+import { computed, inject, onMounted, watch } from 'vue';
+import { useRouter } from 'vitepress';
+import type { ResolvedReaderOptions } from '../types';
 
-const readingProgress = inject<any>('vb-reading-progress')!
-const sidebarData = inject<any>('vb-sidebar-data')!
-const options = inject<ResolvedReaderOptions>('vb-options')!
+const readingProgress = inject<any>('vb-reading-progress')!;
+const sidebarData = inject<any>('vb-sidebar-data')!;
+const options = inject<ResolvedReaderOptions>('vb-options')!;
+const { route } = useRouter();
 
-const readCount = computed(() =>
-  readingProgress.readPages.value.filter((p: string) =>
-    sidebarData.allPages.value.includes(p)
-  ).length
-)
+function normalizePath(path: string) {
+  return path.replace(/\/$/, '').replace(/\.html$/, '');
+}
 
-const totalCount = computed(() => sidebarData.totalPages.value)
+const readCount = computed(() => {
+  const readPages = new Set(readingProgress.readPages.value.map(normalizePath));
+
+  return sidebarData.allPages.value.filter((page: string) => readPages.has(normalizePath(page)))
+    .length;
+});
+
+const totalCount = computed(() => sidebarData.totalPages.value);
 
 const progressPercent = computed(() => {
-  if (totalCount.value === 0) return 0
-  return Math.round((readCount.value / totalCount.value) * 100)
-})
+  if (totalCount.value === 0) {
+    return 0;
+  }
 
-// Inject read/unread indicator dots into sidebar DOM links
-let obs: MutationObserver | null = null
+  return Math.round((readCount.value / totalCount.value) * 100);
+});
 
-function addSidebarDots(): void {
-  if (typeof document === 'undefined') return
+function syncSidebarMarkers() {
+  if (typeof document === 'undefined') {
+    return;
+  }
 
-  const sidebar = document.querySelector('.VPSidebar')
-  if (!sidebar) return
+  const sidebar = document.querySelector('.VPSidebar');
+  if (!sidebar) {
+    return;
+  }
 
-  const links = sidebar.querySelectorAll<HTMLAnchorElement>(
-    'a.VPLink[href]'
-  )
-
-  const readPages: string[] = readingProgress.readPages.value
+  const links = sidebar.querySelectorAll<HTMLAnchorElement>('a.VPLink[href]');
+  const readPages = new Set(readingProgress.readPages.value.map(normalizePath));
 
   links.forEach((link) => {
-    // Avoid adding duplicate dots
-    if (link.querySelector('.vb-sidebar-dot')) return
+    const href = link.getAttribute('href');
+    if (!href) {
+      return;
+    }
 
-    const href = link.getAttribute('href')
-    if (!href) return
+    const isRead = readPages.has(normalizePath(href));
+    let marker = link.querySelector<HTMLElement>('.vb-sidebar-dot');
 
-    const isRead = readPages.includes(href)
+    if (!marker) {
+      marker = document.createElement('span');
+      marker.className = 'vb-sidebar-dot';
+      marker.setAttribute('aria-hidden', 'true');
+      link.insertBefore(marker, link.firstChild);
+    }
 
-    const dot = document.createElement('span')
-    dot.className = `vb-sidebar-dot ${isRead ? 'vb-sidebar-dot--read' : 'vb-sidebar-dot--unread'}`
-    dot.setAttribute('aria-hidden', 'true')
-    dot.textContent = isRead ? '✓' : '○'
-    link.insertBefore(dot, link.firstChild)
-  })
+    marker.className = `vb-sidebar-dot ${
+      isRead ? 'vb-sidebar-dot--read' : 'vb-sidebar-dot--unread'
+    }`;
+    marker.textContent = isRead ? '✓' : '○';
+  });
 }
 
 onMounted(() => {
-  if (!options.sidebarMarkers.enabled) return
-
-  // Initial run after sidebar renders
-  setTimeout(addSidebarDots, 500)
-
-  // Observe sidebar changes (e.g. collapsed sections expanding)
-  const sidebar = document.querySelector('.VPSidebar')
-  if (sidebar) {
-    obs = new MutationObserver(() => {
-      setTimeout(addSidebarDots, 200)
-    })
-    obs.observe(sidebar, { childList: true, subtree: true })
+  if (!options.sidebarMarkers.enabled) {
+    return;
   }
-})
 
-// Re-run markers when readPages changes
-watch(() => readingProgress.readPages.value, () => {
-  setTimeout(addSidebarDots, 200)
-}, { deep: true })
+  requestAnimationFrame(syncSidebarMarkers);
+});
 
-onUnmounted(() => {
-  obs?.disconnect()
-})
+watch(
+  () => route.path,
+  () => {
+    if (!options.sidebarMarkers.enabled) {
+      return;
+    }
+
+    requestAnimationFrame(syncSidebarMarkers);
+  },
+);
+
+watch(
+  () => [...readingProgress.readPages.value],
+  () => {
+    if (!options.sidebarMarkers.enabled) {
+      return;
+    }
+
+    syncSidebarMarkers();
+  },
+);
 </script>

@@ -6,15 +6,15 @@
 
 ```ts
 withReader({
-  readingProgress: { enabled: true },       // 阅读进度追踪
-  scrollMemory:    { throttleMs: 500 },     // 滚动位置记忆
-  sidebarMarkers:  { enabled: true },       // 侧边栏已读标记
-  readingTime:     { wordsPerMinute: 200 }, // 阅读时间预估
-  backToTop:       { threshold: 300 },      // 回到顶部按钮
-  codeCopy:        { enabled: true },       // 代码块复制
-  readingStats:    { enabled: true },       // 阅读统计
-  autoRedirect:    { toastDuration: 5000 }, // 自动跳转
-})
+  readingProgress: { enabled: true }, // 阅读进度追踪
+  scrollMemory: { throttleMs: 500 }, // 滚动位置记忆
+  sidebarMarkers: { enabled: true }, // 侧边栏已读标记
+  readingTime: { wordsPerMinute: 200 }, // 阅读时间预估
+  backToTop: { threshold: 300 }, // 回到顶部按钮
+  codeCopy: { enabled: true }, // 代码块复制
+  readingStats: { enabled: true }, // 阅读统计
+  autoRedirect: { toastDuration: 5000 }, // 自动跳转
+});
 ```
 
 ## 中文阅读速度
@@ -27,32 +27,32 @@ withReader({
   readingTime: {
     wordsPerMinute: 200,
     languages: {
-      zh: 400,  // 中文：400 字/分钟
-      ja: 350,  // 日文：350 字/分钟
-      en: 200,  // 英文：200 词/分钟
+      zh: 400, // 中文：400 字/分钟
+      ja: 350, // 日文：350 字/分钟
+      en: 200, // 英文：200 词/分钟
     },
   },
-})
+});
 ```
 
 ## 自动跳转行为
 
 ```ts
 // 显示 Toast 3 秒后自动消失（默认 5 秒）
-withReader({ autoRedirect: { toastDuration: 3000 } })
+withReader({ autoRedirect: { toastDuration: 3000 } });
 
 // 不显示 Toast，直接跳转
-withReader({ autoRedirect: { toastDuration: 0 } })
+withReader({ autoRedirect: { toastDuration: 0 } });
 
 // 完全关闭自动跳转提示
-withReader({ autoRedirect: { enabled: false } })
+withReader({ autoRedirect: { enabled: false } });
 ```
 
 ## 回到顶部按钮
 
 ```ts
 // 滚动超过 500px 才显示按钮
-withReader({ backToTop: { threshold: 500 } })
+withReader({ backToTop: { threshold: 500 } });
 ```
 
 ## 关闭不需要的功能
@@ -61,9 +61,9 @@ withReader({ backToTop: { threshold: 500 } })
 
 ```ts
 withReader({
-  codeCopy:   { enabled: false },  // 主题已有代码复制按钮
-  backToTop:  { enabled: false },  // 不需要回到顶部
-})
+  codeCopy: { enabled: false }, // 主题已有代码复制按钮
+  backToTop: { enabled: false }, // 不需要回到顶部
+});
 ```
 
 ## localStorage 存储
@@ -74,7 +74,7 @@ withReader({
 ```ts
 withReader({
   readingProgress: { storageKey: 'my-app:reader-progress' },
-  scrollMemory:    { storageKey: 'my-app:reader-scroll' },
-  readingStats:    { storageKey: 'my-app:reader-stats' },
-})
+  scrollMemory: { storageKey: 'my-app:reader-scroll' },
+  readingStats: { storageKey: 'my-app:reader-stats' },
+});
 ```
