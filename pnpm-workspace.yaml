@@ -1,2 +1,7 @@
 packages:
   - 'demo'
+allowBuilds:
+  esbuild: true
+  simple-git-hooks: true
+minimumReleaseAgeExclude:
+  - happy-dom@20.12.0

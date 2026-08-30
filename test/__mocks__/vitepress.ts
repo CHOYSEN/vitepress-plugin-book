@@ -45,9 +45,11 @@ export const mockRouter = {
   route: { path: '/guide/intro', data: {}, component: null },
   go: async (_to?: string) => {},
   onBeforeRouteChange: undefined as
-    ((to: string) => void | boolean | Promise<void | boolean>) | undefined,
+    | ((to: string) => void | boolean | Promise<void | boolean>)
+    | undefined,
   onBeforePageLoad: undefined as
-    ((to: string) => void | boolean | Promise<void | boolean>) | undefined,
+    | ((to: string) => void | boolean | Promise<void | boolean>)
+    | undefined,
   onAfterPageLoad: undefined as ((to: string) => void | Promise<void>) | undefined,
   onAfterRouteChange: undefined as ((to: string) => void | Promise<void>) | undefined,
 };
