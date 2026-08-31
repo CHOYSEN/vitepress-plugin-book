@@ -1,4 +1,4 @@
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
+import { ref, computed, onMounted, watch, onUnmounted, inject } from 'vue';
 import { useRouter } from 'vitepress';
 import { store } from '../store';
 import type { ResolvedReaderOptions } from '../types';
@@ -9,6 +9,7 @@ import { useSidebarData } from './useSidebarData';
  * Also handles the "continue where you left off" experience.
  */
 export function useReadingProgress(options: ResolvedReaderOptions) {
+  const sidebarData = inject<any>("vb-sidebar-data")!;
   const { route } = useRouter();
   const router = useRouter();
   const { allPagesSet } = useSidebarData();
@@ -18,23 +19,25 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
   const data = store.getProgress(storageKey);
 
   const readPages = ref<string[]>(data.readPages);
+  const readingProgress = ref<Record<string, number>>(
+    data.readingProgress ?? {}
+  );
   const lastVisitedPage = ref<string>(data.lastVisitedPage);
   const lastVisitedAt = ref<number>(data.lastVisitedAt);
   const currentReadingPage = ref('');
   let timer: ReturnType<typeof setTimeout> | null = null;
+  let scrollHandler: (() => void) | null = null;
 
   function saveState(): void {
     store.setProgress(storageKey, {
       readPages: readPages.value,
+      readingProgress: readingProgress.value,
       lastVisitedPage: lastVisitedPage.value,
       lastVisitedAt: lastVisitedAt.value,
     });
   }
 
-  /**
-   * 更新最近访问页面
-   * 只表示访问过，不代表已读完成
-   */
+
   function updateLastVisited(path: string): void {
     lastVisitedPage.value = path;
     lastVisitedAt.value = Date.now();
@@ -42,92 +45,79 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
     saveState();
   }
 
+  function normalizePath(path: string) {
+    return path.replace(/\/$/, "").replace(/\.html$/, "");
+  }
+
   function markAsRead(path: string): void {
-    if (!readPages.value.includes(path)) {
-      readPages.value = [...readPages.value, path];
+    const normalPath = normalizePath(path)
+
+    if (!readPages.value.includes(normalPath)) {
+      readPages.value = [...readPages.value, normalPath];
     }
 
     saveState();
   }
 
-  /**
-   * 获取当前滚动比例
-   */
-  function getScrollPercent(): number {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
+  function updateReadingProgress(path: string): void {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY;
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
 
-    if (scrollHeight <= 0) {
-      return 1;
-    }
-    return scrollTop / scrollHeight;
-  }
+    const percent = scrollHeight <= 0 ? 1 : Math.min(scrollTop / scrollHeight, 1)
 
-  /**
-   * 检查是否阅读完成
-   */
-  function checkReadComplete(): void {
-    const path = currentReadingPage.value;
+    readingProgress.value[path] = Math.max(
+      readingProgress.value[path] ?? 0,
+      document.documentElement.scrollTop || document.body.scrollTop
+    );
 
-    if (!path) {
-      return;
-    }
+    console.log('persent', percent)
 
-    if (isPageRead(path)) {
-      return;
-    }
-
-    const percent = getScrollPercent();
-
-    if (percent >= 0.8) {
+    if (percent >= 0.9) {
       markAsRead(path);
-
-      cleanupReaderListener();
+      return;
     }
+
+    if (saveTimer) {
+      clearTimeout(saveTimer);
+    }
+
+    saveTimer = setTimeout(() => {
+      saveState();
+    }, 300);
   }
 
-  /**
-   * 开始阅读监听
-   */
+
   function startReadingTrack(path: string): void {
     currentReadingPage.value = path;
 
-    // 停留10秒认为阅读完成
-    timer = setTimeout(() => {
-      markAsRead(path);
+    scrollHandler = () => {
+      updateReadingProgress(path);
+    };
 
-      cleanupReaderListener();
-    }, 10000);
-
-    window.addEventListener('scroll', checkReadComplete, {
-      passive: true,
-    });
+    window.addEventListener(
+      'scroll',
+      scrollHandler,
+      {
+        passive: true,
+      }
+    );
   }
 
-  /**
-   * 清理监听
-   */
   function cleanupReaderListener(): void {
-    if (timer) {
-      clearTimeout(timer);
-
-      timer = null;
+    if (!scrollHandler) {
+      return;
     }
 
-    window.removeEventListener('scroll', checkReadComplete);
+    window.removeEventListener(
+      'scroll',
+      scrollHandler
+    );
+
+    scrollHandler = null;
   }
 
-  /**
-   * 判断是否已读
-   */
-  function isPageRead(path: string): boolean {
-    return readPages.value.includes(path);
-  }
-
-  /**
-   * 阅读进度
-   */
   const progress = computed(() => {
     if (allPagesSet.value.size === 0) {
       return 0;
@@ -142,6 +132,8 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
    */
   function goToLastVisited(): void {
     const target = lastVisitedPage.value;
+    console.log('target>>', target)
+    console.log('route.path', route.path)
     if (target && target !== route.path) {
       router.go(target);
     }
@@ -151,9 +143,9 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
    * 初始化
    */
   onMounted(() => {
-    const currentPath = route.path;
+    const currentPath = normalizePath(route.path);
+    console.log(currentPath, 'current')
 
-    // 继续阅读跳转
     if (
       options.autoRedirect.enabled &&
       lastVisitedPage.value &&
@@ -167,14 +159,12 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
     startReadingTrack(currentPath);
   });
 
-  /**
-   * SPA路由变化
-   */
   watch(
     () => route.path,
     (newPath, oldPath) => {
       if (oldPath && newPath !== oldPath) {
         // 用户真正进入新的页面
+        // const normaPath = normalizePath(newPath)
         updateLastVisited(newPath);
         cleanupReaderListener();
         startReadingTrack(newPath);
@@ -189,7 +179,7 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
   return {
     readPages,
     progress,
-    isPageRead,
+    readingProgress,
     markAsRead,
     lastVisitedPage,
     lastVisitedAt,

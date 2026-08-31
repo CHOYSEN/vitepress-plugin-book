@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue';
-import type { ResolvedReaderOptions } from '../types';
+import { inject } from "vue";
+import type { ResolvedReaderOptions } from "../types";
 
-const readingTime = inject<any>('vb-reading-time')!;
-const options = inject<ResolvedReaderOptions>('vb-options')!;
+const readingTime = inject<any>("vb-reading-time")!;
+const options = inject<ResolvedReaderOptions>("vb-options")!;
 </script>

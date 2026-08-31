@@ -7,11 +7,9 @@ import type { ReaderOptions, ResolvedReaderOptions } from './types';
 
 // Components
 import ReaderLayout from './components/ReaderLayout.vue';
-import ProgressBar from './components/ProgressBar.vue';
 import ContinueReading from './components/ContinueReading.vue';
 import ReadingTime from './components/ReadingTime.vue';
 import BackToTop from './components/BackToTop.vue';
-import CodeCopyButton from './components/CodeCopyButton.vue';
 import SidebarIndicators from './components/SidebarIndicators.vue';
 
 /**
@@ -92,8 +90,6 @@ export function withReader(userOptions: ReaderOptions = {}): Theme {
         // all reader UI components injected into appropriate slots
         default: () =>
           h(DefaultTheme.Layout, null, {
-            // Progress bar at the very top of the layout
-            'layout-top': () => h(ProgressBar),
             // Reading time badge before doc content
             'doc-before': () => h(ReadingTime),
             // Continue-reading toast above doc content
@@ -111,7 +107,6 @@ export function withReader(userOptions: ReaderOptions = {}): Theme {
 
       // Register CodeCopyButton globally — it's self-contained
       // (MutationObserver-based, doesn't need a specific slot)
-      app.component('CodeCopyButton', CodeCopyButton);
     },
   };
 }
@@ -134,22 +129,18 @@ export const VitepressReaderPlugin: Plugin<ReaderOptions | undefined> = {
 
     // Register all components globally
     app.component('ReaderLayout', ReaderLayout);
-    app.component('ProgressBar', ProgressBar);
     app.component('ContinueReading', ContinueReading);
     app.component('ReadingTime', ReadingTime);
     app.component('BackToTop', BackToTop);
-    app.component('CodeCopyButton', CodeCopyButton);
     app.component('SidebarIndicators', SidebarIndicators);
   },
 };
 
 // Re-export components for direct use
 export { ReaderLayout };
-export { ProgressBar };
 export { ContinueReading };
 export { ReadingTime };
 export { BackToTop };
-export { CodeCopyButton };
 export { SidebarIndicators };
 
 // Re-export types

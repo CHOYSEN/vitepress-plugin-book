@@ -2,80 +2,110 @@
   <div v-if="options.sidebarMarkers.enabled" class="vb-sidebar-indicators">
     <div class="vb-sidebar-indicators__header">
       <span class="vb-sidebar-indicators__label">阅读进度</span>
-      <span class="vb-sidebar-indicators__count">{{ readCount }} / {{ totalCount }}</span>
+      <span class="vb-sidebar-indicators__count"
+        >{{ readCount }} / {{ totalCount }}</span
+      >
     </div>
     <div class="vb-sidebar-indicators__bar">
-      <div class="vb-sidebar-indicators__bar-fill" :style="{ width: `${progressPercent}%` }" />
+      <div
+        class="vb-sidebar-indicators__bar-fill"
+        :style="{ width: `${progressPercent}%` }"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, watch } from 'vue';
-import { useRouter } from 'vitepress';
-import type { ResolvedReaderOptions } from '../types';
+import { computed, inject, onMounted, watch } from "vue";
+import { useRouter } from "vitepress";
+import type { ResolvedReaderOptions } from "../types";
 
-const readingProgress = inject<any>('vb-reading-progress')!;
-const sidebarData = inject<any>('vb-sidebar-data')!;
-const options = inject<ResolvedReaderOptions>('vb-options')!;
+const readingProgress = inject<any>("vb-reading-progress")!;
+const sidebarData = inject<any>("vb-sidebar-data")!;
+const options = inject<ResolvedReaderOptions>("vb-options")!;
 const { route } = useRouter();
 
-function normalizePath(path: string) {
-  return path.replace(/\/$/, '').replace(/\.html$/, '');
-}
-
 const readCount = computed(() => {
-  const readPages = new Set(readingProgress.readPages.value.map(normalizePath));
+  const readPages = new Set( readingProgress.readPages.value );
 
-  return sidebarData.allPages.value.filter((page: string) => readPages.has(normalizePath(page)))
-    .length;
+  return sidebarData.allPages.value.filter(
+    (page: string) => readPages.has(page)
+  ).length;
 });
 
 const totalCount = computed(() => sidebarData.totalPages.value);
 
-const progressPercent = computed(() => {
-  if (totalCount.value === 0) {
-    return 0;
-  }
 
-  return Math.round((readCount.value / totalCount.value) * 100);
+const progressPercent = computed(() => {
+  if (totalCount.value === 0) return 0;
+
+  return Math.round(
+    (readCount.value / totalCount.value) * 100
+  );
 });
 
-function syncSidebarMarkers() {
-  if (typeof document === 'undefined') {
-    return;
+  function normalizePath(path: string | null) {
+    return path?.replace(/\/$/, "").replace(/\.html$/, "");
   }
 
-  const sidebar = document.querySelector('.VPSidebar');
+function syncSidebarLinks() {
+  const sidebar = document.querySelector(".VPSidebar");
+
   if (!sidebar) {
     return;
   }
 
-  const links = sidebar.querySelectorAll<HTMLAnchorElement>('a.VPLink[href]');
-  const readPages = new Set(readingProgress.readPages.value.map(normalizePath));
+  const readPages = new Set(readingProgress.readPages.value);
+
+  const links =sidebar.querySelectorAll<HTMLAnchorElement>("a.VPLink[href]");
 
   links.forEach((link) => {
-    const href = link.getAttribute('href');
-    if (!href) {
-      return;
-    }
+    const href = normalizePath(link.getAttribute("href"));
+    if (!href) return;
 
-    const isRead = readPages.has(normalizePath(href));
-    let marker = link.querySelector<HTMLElement>('.vb-sidebar-dot');
+    const isRead = readPages.has(href);
 
-    if (!marker) {
-      marker = document.createElement('span');
-      marker.className = 'vb-sidebar-dot';
-      marker.setAttribute('aria-hidden', 'true');
-      link.insertBefore(marker, link.firstChild);
-    }
-
-    marker.className = `vb-sidebar-dot ${
-      isRead ? 'vb-sidebar-dot--read' : 'vb-sidebar-dot--unread'
-    }`;
-    marker.textContent = isRead ? '✓' : '○';
+    link.classList.toggle("vb-sidebar-link--read", isRead);
   });
 }
+
+
+function syncDocAsideLinks() {
+  const aside = document.querySelector(".VPDocAside");
+  if (!aside) return;
+
+  const outlineLinks = Array.from(
+    aside.querySelectorAll<HTMLAnchorElement>(".outline-link[href]")
+  );
+
+  const activeIndex = outlineLinks.findIndex((link) =>
+    link.classList.contains("active")
+  );
+
+
+  const readPages = new Set(readingProgress.readPages.value)
+
+  outlineLinks.forEach((link, index) => {
+    const isRead = activeIndex !== -1 ? index < activeIndex : false;
+
+    if (readPages.has(route.path)) {
+      link?.classList.add("vb-doc-aside--read")
+    }
+
+    link?.classList.toggle("vb-doc-aside--read", isRead);
+  });
+}
+
+
+function syncSidebarMarkers() {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  syncSidebarLinks();
+  syncDocAsideLinks();
+}
+
 
 onMounted(() => {
   if (!options.sidebarMarkers.enabled) {
@@ -85,6 +115,7 @@ onMounted(() => {
   requestAnimationFrame(syncSidebarMarkers);
 });
 
+
 watch(
   () => route.path,
   () => {
@@ -93,17 +124,33 @@ watch(
     }
 
     requestAnimationFrame(syncSidebarMarkers);
-  },
+  }
 );
 
+
 watch(
-  () => [...readingProgress.readPages.value],
+  () =>
+    readingProgress.readingProgress.value[route.path ?? ""],
+  () => {
+    if (!options.sidebarMarkers.enabled) {
+      return;
+    }
+
+    requestAnimationFrame(
+      syncSidebarMarkers
+    );
+  }
+);
+
+
+watch(
+  () => [...readingProgress.readPages.value,],
   () => {
     if (!options.sidebarMarkers.enabled) {
       return;
     }
 
     syncSidebarMarkers();
-  },
+  }
 );
 </script>
