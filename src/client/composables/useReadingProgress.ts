@@ -9,7 +9,7 @@ import { useSidebarData } from './useSidebarData';
  * Also handles the "continue where you left off" experience.
  */
 export function useReadingProgress(options: ResolvedReaderOptions) {
-  const sidebarData = inject<any>("vb-sidebar-data")!;
+  const sidebarData = inject<any>('vb-sidebar-data')!;
   const { route } = useRouter();
   const router = useRouter();
   const { allPagesSet } = useSidebarData();
@@ -19,9 +19,7 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
   const data = store.getProgress(storageKey);
 
   const readPages = ref<string[]>(data.readPages);
-  const readingProgress = ref<Record<string, number>>(
-    data.readingProgress ?? {}
-  );
+  const readingProgress = ref<Record<string, number>>(data.readingProgress ?? {});
   const lastVisitedPage = ref<string>(data.lastVisitedPage);
   const lastVisitedAt = ref<number>(data.lastVisitedAt);
   const currentReadingPage = ref('');
@@ -37,7 +35,6 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
     });
   }
 
-
   function updateLastVisited(path: string): void {
     lastVisitedPage.value = path;
     lastVisitedAt.value = Date.now();
@@ -46,11 +43,11 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
   }
 
   function normalizePath(path: string) {
-    return path.replace(/\/$/, "").replace(/\.html$/, "");
+    return path.replace(/\/$/, '').replace(/\.html$/, '');
   }
 
   function markAsRead(path: string): void {
-    const normalPath = normalizePath(path)
+    const normalPath = normalizePath(path);
 
     if (!readPages.value.includes(normalPath)) {
       readPages.value = [...readPages.value, normalPath];
@@ -62,17 +59,18 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
   let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
   function updateReadingProgress(path: string): void {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY;
+    const scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop || window.scrollY;
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
 
-    const percent = scrollHeight <= 0 ? 1 : Math.min(scrollTop / scrollHeight, 1)
+    const percent = scrollHeight <= 0 ? 1 : Math.min(scrollTop / scrollHeight, 1);
 
     readingProgress.value[path] = Math.max(
       readingProgress.value[path] ?? 0,
-      document.documentElement.scrollTop || document.body.scrollTop
+      document.documentElement.scrollTop || document.body.scrollTop,
     );
 
-    console.log('persent', percent)
+    console.log('persent', percent);
 
     if (percent >= 0.9) {
       markAsRead(path);
@@ -88,7 +86,6 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
     }, 300);
   }
 
-
   function startReadingTrack(path: string): void {
     currentReadingPage.value = path;
 
@@ -96,13 +93,9 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
       updateReadingProgress(path);
     };
 
-    window.addEventListener(
-      'scroll',
-      scrollHandler,
-      {
-        passive: true,
-      }
-    );
+    window.addEventListener('scroll', scrollHandler, {
+      passive: true,
+    });
   }
 
   function cleanupReaderListener(): void {
@@ -110,10 +103,7 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
       return;
     }
 
-    window.removeEventListener(
-      'scroll',
-      scrollHandler
-    );
+    window.removeEventListener('scroll', scrollHandler);
 
     scrollHandler = null;
   }
@@ -132,8 +122,8 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
    */
   function goToLastVisited(): void {
     const target = lastVisitedPage.value;
-    console.log('target>>', target)
-    console.log('route.path', route.path)
+    console.log('target>>', target);
+    console.log('route.path', route.path);
     if (target && target !== route.path) {
       router.go(target);
     }
@@ -144,7 +134,7 @@ export function useReadingProgress(options: ResolvedReaderOptions) {
    */
   onMounted(() => {
     const currentPath = normalizePath(route.path);
-    console.log(currentPath, 'current')
+    console.log(currentPath, 'current');
 
     if (
       options.autoRedirect.enabled &&

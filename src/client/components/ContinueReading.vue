@@ -28,16 +28,16 @@ const { route } = useRouter();
 let timer: ReturnType<typeof setTimeout> | null = null;
 
 function startTimer() {
-  if (options.autoRedirect.toastDuration <= 0) return
+  if (options.autoRedirect.toastDuration <= 0) return;
   timer = setTimeout(() => {
-      visible.value = false;
-      timer = null;
-    }, options.autoRedirect.toastDuration);
+    visible.value = false;
+    timer = null;
+  }, options.autoRedirect.toastDuration);
 }
 
-function onMouseMove () {
+function onMouseMove() {
   if (!visible.value) return;
-  startTimer()
+  startTimer();
   document.removeEventListener('mousemove', onMouseMove);
 }
 
@@ -50,13 +50,13 @@ onMounted(() => {
     visible.value = true;
   }
 
-  document.addEventListener('mousemove',onMouseMove)
+  document.addEventListener('mousemove', onMouseMove);
 });
 
 onUnmounted(() => {
   document.removeEventListener('mousemove', onMouseMove);
   if (timer) clearTimeout(timer);
-})
+});
 
 function onGo(): void {
   if (timer) clearTimeout(timer);

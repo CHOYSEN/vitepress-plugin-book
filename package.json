@@ -1,17 +1,23 @@
 {
   "name": "vitepress-plugin-book",
   "version": "0.1.0",
-  "type": "module",
   "description": "VitePress plugin to enhance reading experience for open-source books — progress tracking, scroll memory, reading stats, and more.",
-  "author": "",
-  "license": "MIT",
   "keywords": [
-    "vitepress",
-    "vitepress-plugin",
+    "documentation",
+    "ebook",
     "reader",
     "reading-progress",
-    "ebook",
-    "documentation"
+    "vitepress",
+    "vitepress-plugin"
+  ],
+  "license": "MIT",
+  "author": "",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./dist/client/style.css"
   ],
   "exports": {
     ".": {
@@ -24,38 +30,51 @@
     },
     "./client/style.css": "./dist/client/style.css"
   },
-  "files": [
-    "dist"
-  ],
-  "sideEffects": [
-    "./dist/client/style.css"
-  ],
   "scripts": {
     "build": "tsdown && node scripts/build-post.mjs",
     "dev": "tsdown --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "format": "oxfmt",
+    "lint": "oxlint",
+    "typecheck": "tsc",
+    "postinstall": "simple-git-hooks"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/test-utils": "^2.5.0",
+    "happy-dom": "^20.12.0",
+    "nano-staged": "^1.0.2",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
+    "simple-git-hooks": "^2.14.0",
+    "tsdown": "^0.22.14",
+    "typescript": "^7.0.2",
+    "unplugin-vue": "^7.2.0",
+    "vitepress": "^1.6.4",
+    "vitest": "^4.1.11",
+    "vue": "^3.5.42",
+    "vue-tsc": "^3.3.11"
   },
   "peerDependencies": {
     "vitepress": ">=1.0.0",
     "vue": ">=3.3.0"
   },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.8",
-    "@vue/test-utils": "^2.4.11",
-    "happy-dom": "^20.11.0",
-    "tsdown": "^0.22.12",
-    "typescript": "^7.0.2",
-    "unplugin-vue": "^7.2.0",
-    "vitepress": "^1.6.4",
-    "vitest": "^3.2.7",
-    "vue": "^3.5.40",
-    "vue-tsc": "^3.3.7"
+  "simple-git-hooks": {
+    "pre-commit": "./node_modules/.bin/nano-staged",
+    "commit-msg": "./node_modules/.bin/commitlint --edit",
+    "pre-push": "pnpm run typecheck"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
+  "nano-staged": {
+    "*": "oxfmt --no-error-on-unmatched-pattern",
+    "**/src/**/*.{js,jsx,ts,tsx,mjs,cjs}": "oxlint"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
     ]
   }
 }

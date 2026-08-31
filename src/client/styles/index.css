@@ -157,7 +157,6 @@
   opacity: 0;
 }
 
-
 /* ---- Sidebar Indicators ---- */
 .vb-sidebar-indicators {
   padding: 8px 0;
@@ -200,7 +199,6 @@
   transition: width 0.5s ease;
 }
 
-
 /* VitePress sidebar links often have stronger default styles than this class,
    so target the actual link element and override the same property explicitly. */
 .VPSidebar .VPLink.vb-sidebar-link--read,
@@ -214,7 +212,6 @@
   color: var(--vp-c-text-3, #9ca3af) !important;
 }
 
-
 .VPDocAside .outline-link.vb-doc-aside--read,
 .VPDocAside a.vb-doc-aside--read {
   color: var(--vp-c-text-3, #9ca3af) !important;
@@ -222,7 +219,7 @@
 }
 
 .VPDocAside .outline-link.vb-doc-aside--read,
-.VPDocAside a.vb-doc-aside--read a:hover{
+.VPDocAside a.vb-doc-aside--read a:hover {
   color: var(--vp-c-text-3, #9ca3af) !important;
   opacity: 0.7;
 }

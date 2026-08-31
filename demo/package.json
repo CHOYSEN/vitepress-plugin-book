@@ -8,8 +8,6 @@
     "preview": "vitepress preview ."
   },
   "devDependencies": {
-    "vitepress": "^1.0.0",
-    "vue": "^3.4.0",
     "vitepress-plugin-book": "workspace:*"
   }
 }
