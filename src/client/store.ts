@@ -56,6 +56,7 @@ class ReaderStore {
   getProgress(storageKey: string): ReadingProgressData {
     return this.get<ReadingProgressData>(storageKey, {
       readPages: [],
+      readingProgress: {},
       lastVisitedPage: '',
       lastVisitedAt: 0,
     });

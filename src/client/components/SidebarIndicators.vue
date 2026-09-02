@@ -20,61 +20,73 @@ const sidebarData = inject<any>('vb-sidebar-data')!;
 const options = inject<ResolvedReaderOptions>('vb-options')!;
 const { route } = useRouter();
 
-function normalizePath(path: string) {
-  return path.replace(/\/$/, '').replace(/\.html$/, '');
-}
-
 const readCount = computed(() => {
-  const readPages = new Set(readingProgress.readPages.value.map(normalizePath));
+  const readPages = new Set(readingProgress.readPages.value);
 
-  return sidebarData.allPages.value.filter((page: string) => readPages.has(normalizePath(page)))
-    .length;
+  return sidebarData.allPages.value.filter((page: string) => readPages.has(page)).length;
 });
 
 const totalCount = computed(() => sidebarData.totalPages.value);
 
 const progressPercent = computed(() => {
-  if (totalCount.value === 0) {
-    return 0;
-  }
+  if (totalCount.value === 0) return 0;
 
   return Math.round((readCount.value / totalCount.value) * 100);
 });
+
+function normalizePath(path: string | null) {
+  return path?.replace(/\/$/, '').replace(/\.html$/, '');
+}
+
+function syncSidebarLinks() {
+  const sidebar = document.querySelector('.VPSidebar');
+
+  if (!sidebar) {
+    return;
+  }
+
+  const readPages = new Set(readingProgress.readPages.value);
+
+  const links = sidebar.querySelectorAll<HTMLAnchorElement>('a.VPLink[href]');
+
+  links.forEach((link) => {
+    const href = normalizePath(link.getAttribute('href'));
+    if (!href) return;
+
+    const isRead = readPages.has(href);
+
+    link.classList.toggle('vb-sidebar-link--read', isRead);
+  });
+}
+
+function syncDocAsideLinks() {
+  const aside = document.querySelector('.VPDocAside');
+  if (!aside) return;
+
+  const outlineLinks = Array.from(aside.querySelectorAll<HTMLAnchorElement>('.outline-link[href]'));
+
+  const activeIndex = outlineLinks.findIndex((link) => link.classList.contains('active'));
+
+  const readPages = new Set(readingProgress.readPages.value);
+
+  outlineLinks.forEach((link, index) => {
+    const isRead = activeIndex !== -1 ? index < activeIndex : false;
+
+    if (readPages.has(route.path)) {
+      link?.classList.add('vb-doc-aside--read');
+    }
+
+    link?.classList.toggle('vb-doc-aside--read', isRead);
+  });
+}
 
 function syncSidebarMarkers() {
   if (typeof document === 'undefined') {
     return;
   }
 
-  const sidebar = document.querySelector('.VPSidebar');
-  if (!sidebar) {
-    return;
-  }
-
-  const links = sidebar.querySelectorAll<HTMLAnchorElement>('a.VPLink[href]');
-  const readPages = new Set(readingProgress.readPages.value.map(normalizePath));
-
-  links.forEach((link) => {
-    const href = link.getAttribute('href');
-    if (!href) {
-      return;
-    }
-
-    const isRead = readPages.has(normalizePath(href));
-    let marker = link.querySelector<HTMLElement>('.vb-sidebar-dot');
-
-    if (!marker) {
-      marker = document.createElement('span');
-      marker.className = 'vb-sidebar-dot';
-      marker.setAttribute('aria-hidden', 'true');
-      link.insertBefore(marker, link.firstChild);
-    }
-
-    marker.className = `vb-sidebar-dot ${
-      isRead ? 'vb-sidebar-dot--read' : 'vb-sidebar-dot--unread'
-    }`;
-    marker.textContent = isRead ? '✓' : '○';
-  });
+  syncSidebarLinks();
+  syncDocAsideLinks();
 }
 
 onMounted(() => {
@@ -87,6 +99,17 @@ onMounted(() => {
 
 watch(
   () => route.path,
+  () => {
+    if (!options.sidebarMarkers.enabled) {
+      return;
+    }
+
+    requestAnimationFrame(syncSidebarMarkers);
+  },
+);
+
+watch(
+  () => readingProgress.readingProgress.value[route.path ?? ''],
   () => {
     if (!options.sidebarMarkers.enabled) {
       return;

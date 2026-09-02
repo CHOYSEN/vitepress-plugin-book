@@ -54,6 +54,7 @@ export const DEFAULT_OPTIONS: ResolvedReaderOptions = {
 export interface ReadingProgressData {
   /** Set of page paths that have been visited */
   readPages: string[];
+  readingProgress: Record<string, number>;
   /** Last visited page path */
   lastVisitedPage: string;
   /** Timestamp of last visit */

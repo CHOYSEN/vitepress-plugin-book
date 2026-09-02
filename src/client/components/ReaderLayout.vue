@@ -21,7 +21,7 @@ import type { ResolvedReaderOptions } from '../types';
 const options = inject<ResolvedReaderOptions>(READER_OPTIONS_KEY)!;
 
 // Initialize all side-effect composables (scroll memory, stats timer)
-useScrollMemory(options);
+// useScrollMemory(options);
 useReadingStats(options);
 
 // Compute shared state once

@@ -157,52 +157,6 @@
   opacity: 0;
 }
 
-/* ---- Code Copy Button ---- */
-.vb-code-copy-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border: 1px solid var(--vp-c-divider, rgba(255, 255, 255, 0.12));
-  border-radius: 6px;
-  background: var(--vp-code-block-bg, #1e1e20);
-  color: var(--vp-c-text-2, rgba(235, 235, 245, 0.6));
-  font-size: 12px;
-  cursor: pointer;
-  opacity: 0;
-  transition:
-    opacity 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-/* Show button on hover over the code block */
-.vb-code-copy-btn:hover,
-div[class*='language-'] pre:hover .vb-code-copy-btn,
-pre:hover .vb-code-copy-btn {
-  opacity: 1;
-}
-
-/* Show button on hover over the button itself, plus a slightly visible state always */
-.vb-code-copy-btn {
-  opacity: 0.5;
-}
-
-.vb-code-copy-btn:hover {
-  opacity: 1;
-  color: var(--vp-c-brand-1, #a8b1ff);
-  border-color: var(--vp-c-brand-1, #a8b1ff);
-}
-
-.vb-code-copy-btn--copied {
-  color: #4ade80 !important;
-  border-color: #4ade80 !important;
-}
-
 /* ---- Sidebar Indicators ---- */
 .vb-sidebar-indicators {
   padding: 8px 0;
@@ -245,24 +199,27 @@ pre:hover .vb-code-copy-btn {
   transition: width 0.5s ease;
 }
 
-/* ---- Sidebar Dot Markers ---- */
-.vb-sidebar-dot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
-  font-size: 10px;
-  line-height: 1;
+/* VitePress sidebar links often have stronger default styles than this class,
+   so target the actual link element and override the same property explicitly. */
+.VPSidebar .VPLink.vb-sidebar-link--read,
+.VPSidebar a.VPLink.vb-sidebar-link--read {
+  color: var(--vp-c-text-3, #9ca3af) !important;
+  opacity: 0.7;
 }
 
-.vb-sidebar-dot--read {
-  color: #22c55e;
+.VPSidebar .VPLink.vb-sidebar-link--read:hover,
+.VPSidebar a.VPLink.vb-sidebar-link--read:hover {
+  color: var(--vp-c-text-3, #9ca3af) !important;
 }
 
-.vb-sidebar-dot--unread {
-  color: var(--vp-c-text-3, #9ca3af);
-  opacity: 0.5;
+.VPDocAside .outline-link.vb-doc-aside--read,
+.VPDocAside a.vb-doc-aside--read {
+  color: var(--vp-c-text-3, #9ca3af) !important;
+  opacity: 0.7;
+}
+
+.VPDocAside .outline-link.vb-doc-aside--read,
+.VPDocAside a.vb-doc-aside--read a:hover {
+  color: var(--vp-c-text-3, #9ca3af) !important;
+  opacity: 0.7;
 }

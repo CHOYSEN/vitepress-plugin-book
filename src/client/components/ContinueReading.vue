@@ -22,14 +22,26 @@ import { useRouter } from 'vitepress';
 
 const readingProgress = inject<any>('vb-reading-progress')!;
 const options = inject<ResolvedReaderOptions>('vb-options')!;
-
 const visible = ref(false);
 const { route } = useRouter();
 
 let timer: ReturnType<typeof setTimeout> | null = null;
 
+function startTimer() {
+  if (options.autoRedirect.toastDuration <= 0) return;
+  timer = setTimeout(() => {
+    visible.value = false;
+    timer = null;
+  }, options.autoRedirect.toastDuration);
+}
+
+function onMouseMove() {
+  if (!visible.value) return;
+  startTimer();
+  document.removeEventListener('mousemove', onMouseMove);
+}
+
 onMounted(() => {
-  // Sync with the reading progress composable state
   if (
     options.autoRedirect.enabled &&
     readingProgress.lastVisitedPage.value &&
@@ -38,14 +50,11 @@ onMounted(() => {
     visible.value = true;
   }
 
-  if (visible.value && options.autoRedirect.toastDuration > 0) {
-    timer = setTimeout(() => {
-      visible.value = false;
-    }, options.autoRedirect.toastDuration);
-  }
+  document.addEventListener('mousemove', onMouseMove);
 });
 
 onUnmounted(() => {
+  document.removeEventListener('mousemove', onMouseMove);
   if (timer) clearTimeout(timer);
 });
 
